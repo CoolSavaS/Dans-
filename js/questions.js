@@ -873,6 +873,60 @@ Q("dual_cw", "rules", "generic", "fact", "Dual carriageway 70",
    { en: "80 mph", tr: "80 mph" },
    { en: "50 mph", tr: "50 mph" }]);
 
+Q("sign_redcircle", "rules", "signshape", "fact", "Red circle = prohibition",
+  "What do road signs with red circles mostly do?",
+  "Kırmızı çemberli levhalar çoğunlukla ne bildirir?",
+  "They give prohibitive orders (mostly 'do not')", "Yasak bildirirler (çoğunlukla 'yapma')",
+  "Highway Code: kırmızı çember = yasaklayıcı emir.", "Highway Code: red circles are mostly prohibitive.",
+  [{ en: "They give warnings",            tr: "Uyarı verirler" },
+   { en: "They show directions",          tr: "Yön gösterirler" },
+   { en: "They are only for lorries",     tr: "Sadece kamyonlar içindir" }]);
+
+Q("sign_triangle", "rules", "signshape", "fact", "Triangle = warning",
+  "What shape are most warning signs?",
+  "Uyarı levhaları çoğunlukla hangi şekildedir?",
+  "Triangular with a red border", "Kırmızı kenarlı üçgen",
+  "Üçgen gördüysen: ileride tehlike var, hazırlan.", "See a triangle: there's a hazard ahead, get ready.",
+  [{ en: "Circular with a blue background", tr: "Mavi zeminli daire" },
+   { en: "Rectangular and green",           tr: "Yeşil dikdörtgen" },
+   { en: "Octagonal",                       tr: "Sekizgen" }]);
+
+Q("sign_bluecircle", "rules", "signshape", "fact", "Blue circle = must do",
+  "What do blue circular signs (without a red border) give?",
+  "Kırmızı kenarı olmayan mavi daire levhalar ne bildirir?",
+  "Positive instructions (what you must do)", "Olumlu talimat (yapman gerekeni)",
+  "Mavi daire: 'şunu yap' — örn. sola dön, soldan git.", "Blue circle: 'do this' — e.g. turn left, keep left.",
+  [{ en: "Prohibitions",                  tr: "Yasaklar" },
+   { en: "Warnings about hazards",        tr: "Tehlike uyarıları" },
+   { en: "Tourist information",           tr: "Turistik bilgi" }]);
+
+Q("sign_octagon", "rules", "signshape", "fact", "STOP = unique octagon",
+  "Why is the STOP sign the only octagonal sign?",
+  "STOP levhası neden tek sekizgen levhadır?",
+  "So it can be recognised even if partly covered", "Kısmen kapansa bile şeklinden tanınsın diye",
+  "Kar kaplasa bile sekizgeni tanırsın: DUR.", "Even snow-covered, the octagon says: STOP.",
+  [{ en: "It is cheaper to make",          tr: "Üretimi daha ucuzdur" },
+   { en: "It looks more decorative",       tr: "Daha süslü görünür" },
+   { en: "There is no special reason",     tr: "Özel bir nedeni yok" }]);
+
+Q("sign_motorwayblue", "rules", "signshape", "fact", "Blue rect = motorway",
+  "What colour are direction signs on motorways?",
+  "Otoyol yön levhaları hangi renktedir?",
+  "Blue background", "Mavi zemin",
+  "Mavi = otoyol, yeşil = ana yol, beyaz = yerel yol.", "Blue = motorway, green = primary route, white = local.",
+  [{ en: "Green background",  tr: "Yeşil zemin" },
+   { en: "White background",  tr: "Beyaz zemin" },
+   { en: "Brown background",  tr: "Kahverengi zemin" }]);
+
+Q("sign_brown", "rules", "signshape", "fact", "Brown = tourist",
+  "What do brown road signs show?",
+  "Kahverengi levhalar neyi gösterir?",
+  "Routes to tourist attractions", "Turistik yerlere giden yolları",
+  "Kahverengi panel = müze, kale, sahil gibi gezilecek yer.", "Brown panels point to castles, museums, attractions.",
+  [{ en: "Military zones",          tr: "Askeri bölgeleri" },
+   { en: "Roadworks diversions",    tr: "Yol çalışması sapaklarını" },
+   { en: "Private roads",           tr: "Özel yolları" }]);
+
 Q("night_limit", "rules", "night", "fact", "Same limits at night",
   "Do speed limits change at night?",
   "Gece hız sınırları değişir mi?",

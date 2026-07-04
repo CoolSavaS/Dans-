@@ -111,6 +111,11 @@ const LESSONS = [
              en: "Yellow lines, zigzags, bus lanes and the 1.5 m rule for cyclists." },
     qids: ["dbl_yellow", "sgl_yellow", "zigzag", "bus_lane", "cyclist_pass", "double_parked", "single_cw", "dual_cw"] },
 
+  { id: "l_signs", icon: "🪧", title: { tr: "Levha Okuma Sanatı", en: "The Art of Reading Signs" },
+    intro: { tr: "Şekli gör, anlamını bil! Kırmızı çember yasak der, üçgen uyarır, mavi daire talimat verir. Bu kodu çözersen hiç görmediğin levhayı bile okursun.",
+             en: "See the shape, know the meaning! Red circles prohibit, triangles warn, blue circles instruct. Crack this code and you can read signs you've never seen." },
+    qids: ["sign_redcircle", "sign_triangle", "sign_bluecircle", "sign_octagon", "sign_motorwayblue", "sign_brown"] },
+
   { id: "l_country", icon: "🌳", title: { tr: "Kırsal Yollar ve Hemzemin Geçitler", en: "Country Roads & Level Crossings" },
     intro: { tr: "Virajın arkasında ne var bilemezsin: hayvan, traktör, dar köprü… Ve asla bariyerin etrafından dolaşma!",
              en: "You never know what's past the bend: animals, tractors, narrow bridges… And never zig-zag the barriers!" },

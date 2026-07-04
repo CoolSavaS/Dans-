@@ -367,7 +367,7 @@ svg .an-wheel { transform-box: fill-box; transform-origin: center; animation: sp
 /* tren */
 .an-train { animation: train 4.6s linear infinite; }
 @keyframes train { from { transform: translateX(420px); } to { transform: translateX(-190px); } }
-.an-barrier { transform-box: fill-box; transform-origin: 3px 50%; animation: barrier 4.6s ease-in-out infinite; }
+.an-barrier { transform-box: fill-box; transform-origin: left center; animation: barrier 4.6s ease-in-out infinite; }
 @keyframes barrier { 0%, 78% { transform: rotate(0deg); } 92%, 100% { transform: rotate(-72deg); } }
 
 /* bisikletli */
@@ -432,6 +432,11 @@ svg .an-wheel { transform-box: fill-box; transform-origin: center; animation: sp
 /* koyun yolda */
 .an-sheep { animation: sheep 5.2s ease-in-out infinite alternate; }
 @keyframes sheep { from { transform: translate(150px, 182px); } to { transform: translate(205px, 176px); } }
+
+/* levha şekilleri sırayla belirir */
+.an-signpop1, .an-signpop2, .an-signpop3 { transform-box: fill-box; transform-origin: center; animation: pop .55s cubic-bezier(.2,1.6,.4,1) both; }
+.an-signpop2 { animation-delay: .5s; }
+.an-signpop3 { animation-delay: 1s; }
 
 .an-stars text { animation: pulse 1.8s ease-in-out infinite; }
 .an-stars text:nth-child(2) { animation-delay: .5s; }

@@ -270,10 +270,29 @@ const SCENES = {
     <g transform="translate(20,158)">${toonCar("an-drive-slow", "#4b7bec")}</g>
     <text x="18" y="34" font-size="15" font-weight="800" fill="#d35400">🚧 Yol çalışması: yavaşla, işaretlere uy</text></svg>`,
 
+  signshape: () => `<svg viewBox="0 0 400 240"><rect width="400" height="240" fill="#eef7ff"/>
+    <g transform="translate(38,40)"><g class="an-signpop1">
+      <circle cx="42" cy="42" r="40" fill="#fff" stroke="#c00" stroke-width="8"/>
+      <text x="42" y="55" font-size="30" font-weight="800" text-anchor="middle" fill="#333">30</text>
+      <text x="42" y="112" font-size="13" font-weight="800" text-anchor="middle" fill="#c0392b">Kırmızı çember</text>
+      <text x="42" y="128" font-size="12" font-weight="700" text-anchor="middle" fill="#c0392b">= YASAK / EMİR</text></g></g>
+    <g transform="translate(158,40)"><g class="an-signpop2">
+      <path d="M42 2 L82 78 L2 78 Z" fill="#fff" stroke="#c00" stroke-width="7" stroke-linejoin="round"/>
+      <text x="42" y="66" font-size="34" font-weight="800" text-anchor="middle" fill="#333">!</text>
+      <text x="42" y="112" font-size="13" font-weight="800" text-anchor="middle" fill="#d35400">Üçgen</text>
+      <text x="42" y="128" font-size="12" font-weight="700" text-anchor="middle" fill="#d35400">= UYARI</text></g></g>
+    <g transform="translate(278,40)"><g class="an-signpop3">
+      <circle cx="42" cy="42" r="40" fill="#0064c8"/>
+      <path d="M42 66 V30" stroke="#fff" stroke-width="9"/><path d="M27 38 L42 16 L57 38 Z" fill="#fff"/>
+      <text x="42" y="112" font-size="13" font-weight="800" text-anchor="middle" fill="#0064c8">Mavi daire</text>
+      <text x="42" y="128" font-size="12" font-weight="700" text-anchor="middle" fill="#0064c8">= TALİMAT</text></g></g>
+    <text x="200" y="200" font-size="15" font-weight="800" fill="#2d3436" text-anchor="middle" class="an-fadein">Şekli gör → anlamını bil! 🧠</text>
+    <text x="200" y="222" font-size="12.5" font-weight="700" fill="#636e72" text-anchor="middle" class="an-fadein">Circle = order • Triangle = warning • Blue = instruction</text></svg>`,
+
   generic: () => `<svg viewBox="0 0 400 240"><rect width="400" height="240" fill="#dff9fb"/>
-    <g transform="translate(200,120)" class="an-pop">
+    <g transform="translate(200,120)"><g class="an-pop">
       <path d="M0 -74 L58 -52 V6 Q58 58 0 80 Q-58 58 -58 6 V-52 Z" fill="#26de81" stroke="#20bf6b" stroke-width="5"/>
-      <path d="M-26 4 L-6 26 L32 -22" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <path d="M-26 4 L-6 26 L32 -22" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/></g></g>
     <g class="an-stars"><text x="70" y="60" font-size="24">✨</text><text x="300" y="80" font-size="22">⭐</text><text x="90" y="190" font-size="20">🌟</text><text x="310" y="190" font-size="24">✨</text></g>
     <text x="200" y="226" font-size="16" font-weight="800" fill="#2d3436" text-anchor="middle">Kararsızsan → EN GÜVENLİ seçenek! 🛡️</text></svg>`,
 };

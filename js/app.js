@@ -32,7 +32,11 @@ function record(qid, ok) {
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 
-function stopSpeech() { if (state.speech) state.speech.cancel(); }
+function stopSpeech() {
+  // iptal edilen sesin onend'i tetiklenip otomatik akışı bozmasın
+  if (state.pendingUtter) { state.pendingUtter.onend = null; state.pendingUtter = null; }
+  if (state.speech) state.speech.cancel();
+}
 function speak(text, lang) {
   if (!state.speech) return;
   stopSpeech();
@@ -228,29 +232,41 @@ function renderLessonStep() {
 
   renderScene(isIntro ? "generic" : q.scene, $("#lessonScene"));
   if (lessonState.auto) {
-    narrateStep();
-    lessonState.autoT = setTimeout(() => lessonGo(1), isIntro ? 7000 : 11000);
+    // video gibi: sesli anlatım biter bitmez sonraki sahneye geç
+    const stepAtStart = lessonState.i;
+    const advance = () => {
+      if (!lessonState || !lessonState.auto || lessonState.i !== stepAtStart) return;
+      lessonState.autoT = setTimeout(() => lessonGo(1), 1000);
+    };
+    if (state.speech) {
+      narrateStep(advance);
+      // ses hiç başlamazsa diye emniyet zamanlayıcısı
+      lessonState.autoT = setTimeout(advance, 30000);
+    } else {
+      lessonState.autoT = setTimeout(() => lessonGo(1), isIntro ? 7000 : 11000);
+    }
   }
 }
 
-/* Her adımı iki dilde seslendir: önce İngilizce (sınav dili), sonra Türkçe */
-function narrateStep() {
-  if (!state.speech) return;
+/* Her adımı iki dilde seslendir: önce İngilizce (sınav dili), sonra Türkçe.
+   onDone verilirse Türkçe anlatım bitince çağrılır (video akışı için). */
+function narrateStep(onDone) {
+  if (!state.speech) { if (onDone) onDone(); return; }
   const { l, i } = lessonState;
   stopSpeech();
+  let enText, trText;
   if (i === 0) {
-    const uEn = new SpeechSynthesisUtterance(l.intro.en);
-    uEn.lang = "en-GB"; uEn.rate = 0.95;
-    const uTr = new SpeechSynthesisUtterance(l.intro.tr);
-    uTr.lang = "tr-TR"; uTr.rate = 1;
-    state.speech.speak(uEn); state.speech.speak(uTr);
-    return;
+    enText = l.intro.en; trText = l.intro.tr;
+  } else {
+    const q = byId[l.qids[i - 1]];
+    enText = q.q.en + " The answer is: " + q.a.en + ".";
+    trText = "Türkçesi: " + q.q.tr + " Cevap: " + q.a.tr + ". " + q.logic.tr;
   }
-  const q = byId[l.qids[i - 1]];
-  const uEn = new SpeechSynthesisUtterance(q.q.en + " The answer is: " + q.a.en + ".");
+  const uEn = new SpeechSynthesisUtterance(enText);
   uEn.lang = "en-GB"; uEn.rate = 0.95;
-  const uTr = new SpeechSynthesisUtterance("Türkçesi: " + q.q.tr + " Cevap: " + q.a.tr + ". " + q.logic.tr);
+  const uTr = new SpeechSynthesisUtterance(trText);
   uTr.lang = "tr-TR"; uTr.rate = 1;
+  if (onDone) { uTr.onend = onDone; state.pendingUtter = uTr; }
   state.speech.speak(uEn); state.speech.speak(uTr);
 }
 
