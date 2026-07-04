@@ -117,8 +117,10 @@ function home() {
       <span class="mc-icon">🃏</span><span class="mc-title">${t("cards")}</span><span class="mc-sub">${t("cardsSub")}</span></button>
     <button class="menu-card mc-mock" onclick="setView(mockStart)">
       <span class="mc-icon">📝</span><span class="mc-title">${t("mock")}</span><span class="mc-sub">${t("mockSub")}</span></button>
-    <button class="menu-card mc-signs wide" onclick="setView(signsView)">
+    <button class="menu-card mc-signs" onclick="setView(signsView)">
       <span class="mc-icon">🚸</span><span class="mc-title">${t("signs")}</span><span class="mc-sub">${t("signsSub")}</span></button>
+    <button class="menu-card mc-mistakes" onclick="startQuiz('mistakes')">
+      <span class="mc-icon">🔁</span><span class="mc-title">${t("mistakes")}</span><span class="mc-sub">${t("mistakesSub")}</span></button>
   </nav>
   <div class="qlang-row">
     <span>${t("qLangLabel")}:</span>
@@ -156,7 +158,8 @@ function openExplain(q, isWrong, cb) {
   setTimeout(() => {
     if (!state.speech) return;
     stopSpeech();
-    const uEn = new SpeechSynthesisUtterance("The answer is: " + q.a.en);
+    // önce İngilizce (sınav dili), sonra Türkçesi + mantığı
+    const uEn = new SpeechSynthesisUtterance("The correct answer is: " + q.a.en);
     uEn.lang = "en-GB"; uEn.rate = 0.95;
     const uTr = new SpeechSynthesisUtterance("Türkçesi: " + q.a.tr + ". " + q.logic.tr);
     uTr.lang = "tr-TR"; uTr.rate = 0.98;
@@ -215,6 +218,7 @@ function renderLessonStep() {
          <div class="ex-row ex-logic">💡 ${esc(state.lang === "tr" ? q.logic.tr : q.logic.en)}</div>
          <div class="ex-row ex-mnemo">🧠 <code>${esc(q.ezber)}</code></div>`}
   </div>
+  <button class="text-btn narrate-btn" onclick="narrateStep()">${t("narrate")}</button>
   <div class="lesson-nav">
     <button class="nav-btn" ${i === 0 ? "disabled" : ""} onclick="lessonGo(-1)">← ${t("prev")}</button>
     <button class="nav-btn auto ${lessonState.auto ? "on" : ""}" onclick="toggleAuto()">${lessonState.auto ? t("stopAuto") : t("playAll")}</button>
@@ -229,17 +233,25 @@ function renderLessonStep() {
   }
 }
 
+/* Her adımı iki dilde seslendir: önce İngilizce (sınav dili), sonra Türkçe */
 function narrateStep() {
   if (!state.speech) return;
   const { l, i } = lessonState;
   stopSpeech();
-  if (i === 0) { speak(l.intro[state.lang], state.lang); return; }
+  if (i === 0) {
+    const uEn = new SpeechSynthesisUtterance(l.intro.en);
+    uEn.lang = "en-GB"; uEn.rate = 0.95;
+    const uTr = new SpeechSynthesisUtterance(l.intro.tr);
+    uTr.lang = "tr-TR"; uTr.rate = 1;
+    state.speech.speak(uEn); state.speech.speak(uTr);
+    return;
+  }
   const q = byId[l.qids[i - 1]];
-  const uTr = new SpeechSynthesisUtterance(q.q.tr + " Cevap: " + q.a.tr + ". " + q.logic.tr);
-  uTr.lang = "tr-TR"; uTr.rate = 1;
-  const uEn = new SpeechSynthesisUtterance("In English: " + q.a.en);
+  const uEn = new SpeechSynthesisUtterance(q.q.en + " The answer is: " + q.a.en + ".");
   uEn.lang = "en-GB"; uEn.rate = 0.95;
-  state.speech.speak(uTr); state.speech.speak(uEn);
+  const uTr = new SpeechSynthesisUtterance("Türkçesi: " + q.q.tr + " Cevap: " + q.a.tr + ". " + q.logic.tr);
+  uTr.lang = "tr-TR"; uTr.rate = 1;
+  state.speech.speak(uEn); state.speech.speak(uTr);
 }
 
 function toggleAuto() {
@@ -280,7 +292,20 @@ function quizSetup() {
 
 let quiz = null;
 function startQuiz(cat) {
-  const pool = cat === "all" ? QUESTIONS : QUESTIONS.filter((q) => q.cat === cat);
+  let pool;
+  if (cat === "mistakes") {
+    const seen = loadProg().seen || {};
+    pool = QUESTIONS.filter((q) => (seen[q.id] || {}).w > 0);
+    if (!pool.length) {
+      app().innerHTML = `${header(true, t("mistakes"))}<div class="done-screen">
+        <div class="done-emoji">🌟</div><h2>${t("noMistakes")}</h2>
+        <button class="big-btn" onclick="setView(quizSetup)">${t("quiz")}</button>
+        <button class="big-btn ghost" onclick="goHome()">${t("backHome")}</button></div>`;
+      return;
+    }
+  } else {
+    pool = cat === "all" ? QUESTIONS : QUESTIONS.filter((q) => q.cat === cat);
+  }
   quiz = { qs: shuffle(pool).slice(0, 10), i: 0, score: 0, locked: false };
   setView(renderQuiz);
 }

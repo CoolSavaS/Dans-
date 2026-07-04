@@ -65,6 +65,8 @@ button { font-family: inherit; cursor: pointer; border: none; }
 .mc-cards   { border-color: var(--good); }
 .mc-mock    { border-color: var(--bad); }
 .mc-signs   { border-color: var(--brand); }
+.mc-mistakes { border-color: #fd9644; }
+.narrate-btn { margin-top: 10px; }
 
 .qlang-row { display: flex; align-items: center; gap: 8px; margin: 18px 2px; font-size: .85rem; color: var(--sub); flex-wrap: wrap; }
 .chip { background: var(--card); border-radius: 20px; padding: 6px 14px; font-weight: 700; box-shadow: var(--shadow); color: var(--sub); }
