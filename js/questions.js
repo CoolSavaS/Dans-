@@ -192,6 +192,18 @@ Q("winds", "weather", "country", "do", "Wind = firm grip",
   "Keep a firm grip on the steering wheel", "Direksiyonu sıkı tut",
   "Araç aniden savrulabilir.", "The vehicle can be blown off course suddenly.");
 
+Q("high_sided", "weather", "country", "why", "High vehicle = wind",
+  "Why should you take extra care in a high-sided vehicle in strong winds?",
+  "Kuvvetli rüzgârda yüksek araç kullanırken neden ekstra dikkat etmelisin?",
+  "It is more affected by the wind", "Rüzgârdan daha çok etkilenir",
+  "Yüksek yan yüzey yelken gibi rüzgâr tutar.", "A tall side catches the wind like a sail.");
+
+Q("glare", "weather", "night", "do", "Glare = slow",
+  "What should you do when glare or reflections affect your vision?",
+  "Işık yansıması (parlama) görüşünü etkilerse ne yapmalısın?",
+  "Slow down", "Yavaşla",
+  "Gözler parlamaya geç adapte olur.", "Eyes adapt slowly after glare.");
+
 Q("low_sun", "weather", "night", "do", "Low sun = visor",
   "What should you do when the low sun dazzles you?",
   "Alçak güneş gözünü alırsa ne yapmalısın?",
@@ -805,6 +817,24 @@ Q("animals", "rules", "country", "do", "Slow + stop",
   "Yolda hayvan varsa ne yapmalısın?",
   "Slow down and be prepared to stop", "Yavaşla ve durmaya hazır ol",
   "Korna çalma, motoru öfkelendirme — sakin geç.", "Don't sound the horn or rev — pass calmly.");
+
+Q("double_parked", "rules", "parked", "do", "Double parked = careful",
+  "What should you do when passing double-parked vehicles?",
+  "Çift sıra park etmiş araçların yanından geçerken ne yapmalısın?",
+  "Slow down and be cautious", "Yavaşla ve dikkatli ol",
+  "Görüş çok azalır; aradan yaya çıkabilir.", "Your view shrinks; pedestrians can appear between cars.");
+
+Q("concealed_bend", "rules", "country", "do", "Blind bend = slow",
+  "What should you do at a concealed (blind) bend?",
+  "Görüşsüz (kör) virajda ne yapmalısın?",
+  "Slow down", "Yavaşla",
+  "Virajın arkasında ne olduğunu göremezsin.", "You can't see what's beyond the bend.");
+
+Q("narrow_road", "rules", "country", "do", "Narrow = ready to stop",
+  "What should you do on a narrow road?",
+  "Dar yolda ne yapmalısın?",
+  "Be prepared to stop", "Durmaya hazır ol",
+  "Karşıdan araç gelebilir, ikiniz sığmayabilirsiniz.", "Oncoming traffic may appear and you may not both fit.");
 
 Q("country_road", "rules", "country", "why", "Hidden hazards",
   "Why are country roads dangerous?",

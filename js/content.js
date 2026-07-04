@@ -74,7 +74,7 @@ const LESSONS = [
   { id: "l_weather", icon: "🌧️❄️", title: { tr: "Islak, Buzlu ve Sisli Yollar", en: "Wet, Icy & Foggy Roads" },
     intro: { tr: "Kötü havada tek kural: yavaşla ve mesafeyi aç. Ayrıntıları izleyelim.",
              en: "One rule in bad weather: slow down and open the gap. Let's see the details." },
-    qids: ["wet_road", "follow_wet", "ice_grip", "follow_ice", "snow_gas", "fog_slow", "fog_lights", "winds", "low_sun"] },
+    qids: ["wet_road", "follow_wet", "ice_grip", "follow_ice", "snow_gas", "fog_slow", "fog_lights", "winds", "high_sided", "low_sun", "glare"] },
 
   { id: "l_ped", icon: "🚸", title: { tr: "Yayalar ve Geçitler", en: "Pedestrians & Crossings" },
     intro: { tr: "İngiltere'de yaya kraldır! Zebra, pelikan ve okul geçitlerini öğrenelim.",
@@ -109,12 +109,12 @@ const LESSONS = [
   { id: "l_rules", icon: "📏", title: { tr: "Park ve Yol Kuralları", en: "Parking & Road Rules" },
     intro: { tr: "Sarı çizgiler, zigzaglar, otobüs şeritleri ve bisikletlilere 1,5 metre kuralı.",
              en: "Yellow lines, zigzags, bus lanes and the 1.5 m rule for cyclists." },
-    qids: ["dbl_yellow", "sgl_yellow", "zigzag", "bus_lane", "cyclist_pass", "single_cw", "dual_cw"] },
+    qids: ["dbl_yellow", "sgl_yellow", "zigzag", "bus_lane", "cyclist_pass", "double_parked", "single_cw", "dual_cw"] },
 
   { id: "l_country", icon: "🌳", title: { tr: "Kırsal Yollar ve Hemzemin Geçitler", en: "Country Roads & Level Crossings" },
     intro: { tr: "Virajın arkasında ne var bilemezsin: hayvan, traktör, dar köprü… Ve asla bariyerin etrafından dolaşma!",
              en: "You never know what's past the bend: animals, tractors, narrow bridges… And never zig-zag the barriers!" },
-    qids: ["country_road", "sharp_bend", "animals", "meeting", "narrow_bridge", "ped_rural", "level_lights", "level_barrier"] },
+    qids: ["country_road", "sharp_bend", "concealed_bend", "narrow_road", "animals", "meeting", "narrow_bridge", "ped_rural", "level_lights", "level_barrier"] },
 ];
 
 /* ---------- ARAYÜZ METİNLERİ ---------- */

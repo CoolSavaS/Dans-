@@ -531,4 +531,8 @@ function answerSign(idx) {
 
 /* ---------- başlat ---------- */
 if (state.speech) state.speech.getVoices(); // ses listesini ısıt
-window.addEventListener("DOMContentLoaded", () => setView(home));
+if (document.readyState === "loading") {
+  window.addEventListener("DOMContentLoaded", () => setView(home));
+} else {
+  setView(home);
+}
