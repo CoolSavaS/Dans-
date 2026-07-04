@@ -162,9 +162,42 @@ function home() {
     <span>${t("qLangLabel")}:</span>
     ${["both", "en", "tr"].map((m) => `<button class="chip ${state.qlang === m ? "on" : ""}" onclick="setQlang('${m}')">${m === "both" ? t("both") : m.toUpperCase()}</button>`).join("")}
   </div>
+  <div class="backup-row">
+    <span>${t("backupTitle")}:</span>
+    <button class="chip" onclick="backupCopy()">${t("copyBackup")}</button>
+    <button class="chip" onclick="backupLoad()">${t("pasteBackup")}</button>
+    <button class="chip danger" onclick="progReset()">${t("resetProg")}</button>
+  </div>
   <footer class="foot">${t("installHint")}<br>${t("nonCommercial")}</footer>`;
 }
 function setQlang(m) { state.qlang = m; localStorage.setItem("ek-qlang", m); rerender(); }
+
+/* ---------- ilerleme yedeği: cihazlar arası taşıma ---------- */
+function backupCopy() {
+  const code = btoa(JSON.stringify(loadProg()));
+  const done = () => alert(t("copied"));
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(done, () => prompt(t("showCode"), code));
+  } else {
+    prompt(t("showCode"), code);
+  }
+}
+function backupLoad() {
+  const code = prompt(t("pastePrompt"));
+  if (!code) return;
+  try {
+    const data = JSON.parse(atob(code.trim()));
+    if (typeof data !== "object" || data === null) throw new Error("bad");
+    saveProg(data);
+    alert(t("loadedOk"));
+    rerender();
+  } catch (e) { alert(t("badBackup")); }
+}
+function progReset() {
+  if (!confirm(t("confirmReset"))) return;
+  localStorage.removeItem("ek-prog");
+  rerender();
+}
 
 /* =====================================================================
    AÇIKLAMA MODALI — yanlış cevapta animasyon + çift dilli anlatım

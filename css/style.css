@@ -113,6 +113,8 @@ button { font-family: inherit; cursor: pointer; border: none; }
 .guide-en { color: var(--sub); }
 
 .qlang-row { display: flex; align-items: center; gap: 8px; margin: 18px 2px; font-size: .85rem; color: var(--sub); flex-wrap: wrap; }
+.backup-row { display: flex; align-items: center; gap: 8px; margin: 4px 2px 14px; font-size: .85rem; color: var(--sub); flex-wrap: wrap; }
+.chip.danger { color: var(--bad); }
 .chip { background: var(--card); border-radius: 20px; padding: 6px 14px; font-weight: 700; box-shadow: var(--shadow); color: var(--sub); }
 .chip.on { background: var(--brand); color: #fff; }
 .foot { text-align: center; font-size: .75rem; color: var(--sub); margin-top: 22px; line-height: 1.7; }
@@ -490,3 +492,28 @@ svg .an-wheel { transform-box: fill-box; transform-origin: center; animation: sp
 @media (prefers-reduced-motion: reduce) {
   svg [class^="an-"], svg [class*=" an-"] { animation-duration: 8s !important; }
 }
+
+/* --- Koyu tema (izleyici tercihi) --- */
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#161c2d; --card:#222b44; --ink:#e9edf7; --sub:#98a3bd; --shadow:0 4px 14px rgba(0,0,0,.4); }
+  .opt.right { background:#123726; }
+  .opt.wrongopt { background:#3d1f28; }
+  .mini-btn { background:#2a3550; }
+  .ex-mnemo code { background:#332a4d; }
+  .cat-card.all { background:linear-gradient(90deg,#232c48,#2c2544); }
+  .lesson-progress { background:#2a3550; }
+}
+:root[data-theme="dark"] { --bg:#161c2d; --card:#222b44; --ink:#e9edf7; --sub:#98a3bd; --shadow:0 4px 14px rgba(0,0,0,.4); }
+:root[data-theme="dark"] .opt.right { background:#123726; }
+:root[data-theme="dark"] .opt.wrongopt { background:#3d1f28; }
+:root[data-theme="dark"] .mini-btn { background:#2a3550; }
+:root[data-theme="dark"] .ex-mnemo code { background:#332a4d; }
+:root[data-theme="dark"] .cat-card.all { background:linear-gradient(90deg,#232c48,#2c2544); }
+:root[data-theme="dark"] .lesson-progress { background:#2a3550; }
+:root[data-theme="light"] { --bg:#f0f6ff; --card:#ffffff; --ink:#2d3436; --sub:#636e72; --shadow:0 4px 14px rgba(45,52,84,.12); }
+:root[data-theme="light"] .opt.right { background:#e8fff1; }
+:root[data-theme="light"] .opt.wrongopt { background:#ffecef; }
+:root[data-theme="light"] .mini-btn { background:#eef3fd; }
+:root[data-theme="light"] .ex-mnemo code { background:#f3eefe; }
+:root[data-theme="light"] .cat-card.all { background:linear-gradient(90deg,#eef3ff,#f6efff); }
+:root[data-theme="light"] .lesson-progress { background:#dde7f5; }

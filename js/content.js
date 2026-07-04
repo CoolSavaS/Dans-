@@ -227,6 +227,16 @@ const UI = {
   glossarySub: { tr: "Sınav kelimeleri: İngilizce → Türkçe, sesli", en: "Exam vocabulary: EN → TR, with audio" },
   searchPh:    { tr: "Kelime ara… (ör. skid, kavşak)", en: "Search… (e.g. skid, junction)" },
   noResult:    { tr: "Sonuç yok — başka bir kelime dene", en: "No results — try another word" },
+  backupTitle: { tr: "İlerleme yedeği", en: "Progress backup" },
+  copyBackup:  { tr: "📤 Yedek kodu al", en: "📤 Get backup code" },
+  pasteBackup: { tr: "📥 Yedek yükle", en: "📥 Load backup" },
+  resetProg:   { tr: "🗑️ Sıfırla", en: "🗑️ Reset" },
+  copied:      { tr: "Kod kopyalandı! Diğer telefonda 'Yedek yükle'ye yapıştır.", en: "Code copied! Paste it via 'Load backup' on the other phone." },
+  showCode:    { tr: "Bu kodu kopyala ve diğer cihazda 'Yedek yükle'ye yapıştır:", en: "Copy this code and paste it via 'Load backup' on the other device:" },
+  pastePrompt: { tr: "Yedek kodunu buraya yapıştır:", en: "Paste your backup code here:" },
+  loadedOk:    { tr: "Yedek yüklendi! 🎉", en: "Backup loaded! 🎉" },
+  badBackup:   { tr: "Kod çözülemedi — tam kopyaladığından emin ol.", en: "Couldn't read the code — make sure you copied all of it." },
+  confirmReset: { tr: "Tüm ilerleme silinsin mi? (skorlar, yanlışlar, dersler)", en: "Delete all progress? (scores, mistakes, lessons)" },
 };
 
 /* ---------- SINAV SÖZLÜĞÜ — İngilizce terim → Türkçe karşılık ---------- */
