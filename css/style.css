@@ -77,6 +77,32 @@ button { font-family: inherit; cursor: pointer; border: none; }
 .sign-hero-svg svg { width: 100%; height: auto; }
 .an-pop-css { animation: pop .55s cubic-bezier(.2, 1.6, .4, 1) both; }
 
+/* sözlük */
+.mc-glossary { border-color: #8854d0; }
+.gl-search {
+  width: 100%; padding: 13px 16px; border-radius: 14px; border: 2px solid transparent;
+  background: var(--card); box-shadow: var(--shadow); font-family: inherit; font-size: .95rem;
+  color: var(--ink); margin-bottom: 12px; outline: none;
+}
+.gl-search:focus { border-color: var(--brand); }
+.gl-list { display: flex; flex-direction: column; gap: 8px; }
+.gl-row {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--card); border-radius: 12px; box-shadow: var(--shadow); padding: 10px 12px;
+}
+.gl-speak { background: #eef3fd; border-radius: 10px; font-size: 1rem; padding: 8px 10px; }
+:root[data-theme="dark"] .gl-speak { background: #2a3550; }
+.gl-words { display: flex; flex-direction: column; }
+.gl-words b { font-size: .93rem; }
+.gl-words span { font-size: .83rem; color: var(--sub); }
+.gl-empty { text-align: center; color: var(--sub); padding: 30px 0; }
+
+/* konu başarı rozetleri */
+.cat-acc { font-style: normal; font-size: .74rem; font-weight: 800; padding: 2px 8px; border-radius: 10px; }
+.cat-acc.good { background: #e8fff1; color: var(--good); }
+.cat-acc.mid  { background: #fff6e0; color: #e67e22; }
+.cat-acc.low  { background: #ffecef; color: var(--bad); }
+
 /* sınav rehberi */
 .guide-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
 .guide-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px; }

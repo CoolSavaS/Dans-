@@ -153,8 +153,10 @@ function home() {
       <span class="mc-icon">🚸</span><span class="mc-title">${t("signs")}</span><span class="mc-sub">${t("signsSub")}</span></button>
     <button class="menu-card mc-mistakes" onclick="startQuiz('mistakes')">
       <span class="mc-icon">🔁</span><span class="mc-title">${t("mistakes")}</span><span class="mc-sub">${t("mistakesSub")}</span></button>
-    <button class="menu-card mc-guide wide" onclick="setView(guideView)">
+    <button class="menu-card mc-guide" onclick="setView(guideView)">
       <span class="mc-icon">🗓️</span><span class="mc-title">${t("guide")}</span><span class="mc-sub">${t("guideSub")}</span></button>
+    <button class="menu-card mc-glossary" onclick="setView(glossaryView)">
+      <span class="mc-icon">📖</span><span class="mc-title">${t("glossary")}</span><span class="mc-sub">${t("glossarySub")}</span></button>
   </nav>
   <div class="qlang-row">
     <span>${t("qLangLabel")}:</span>
@@ -333,11 +335,27 @@ function lessonGo(dir) {
    QUIZ — yanlışta animasyon devreye girer
    ===================================================================== */
 function quizSetup() {
+  // konu bazlı başarı yüzdesi (hangi konuya çalışmalı?)
+  const seen = loadProg().seen || {};
+  const catAcc = {};
+  for (const q of QUESTIONS) {
+    const s = seen[q.id];
+    if (!s || (s.c + s.w) === 0) continue;
+    catAcc[q.cat] = catAcc[q.cat] || { c: 0, w: 0 };
+    catAcc[q.cat].c += s.c; catAcc[q.cat].w += s.w;
+  }
+  const accBadge = (k) => {
+    const a = catAcc[k];
+    if (!a) return "";
+    const pct = Math.round((100 * a.c) / (a.c + a.w));
+    const cls = pct >= 80 ? "good" : pct >= 50 ? "mid" : "low";
+    return `<em class="cat-acc ${cls}">%${pct}</em>`;
+  };
   app().innerHTML = `${header(true, t("quiz"))}
   <p class="page-sub">${t("chooseCat")} — ${t("quizSub").toLowerCase()}</p>
   <div class="cat-grid">
     <button class="cat-card all" onclick="startQuiz('all')"><span>🎲</span>${t("allCats")}</button>
-    ${Object.entries(CATS).map(([k, c]) => `<button class="cat-card" onclick="startQuiz('${k}')"><span>${c.icon}</span>${c[state.lang]}</button>`).join("")}
+    ${Object.entries(CATS).map(([k, c]) => `<button class="cat-card" onclick="startQuiz('${k}')"><span>${c.icon}</span>${c[state.lang]}${accBadge(k)}</button>`).join("")}
   </div>`;
 }
 
@@ -627,6 +645,28 @@ function guideView() {
   <button class="big-btn" onclick="setView(mockStart)">📝 ${t("mock")} →</button>
   <button class="big-btn ghost" onclick="goHome()">${t("backHome")}</button>`;
   GUIDE.forEach((g, i) => renderScene(g.scene, $("#guideScene" + i)));
+}
+
+/* =====================================================================
+   SÖZLÜK — İngilizce sınav terimleri, arama + sesli telaffuz
+   ===================================================================== */
+function glossaryView() {
+  app().innerHTML = `${header(true, t("glossary"))}
+  <input type="search" id="glsearch" class="gl-search" placeholder="${t("searchPh")}" oninput="renderGlossaryList(this.value)">
+  <div id="gllist"></div>`;
+  renderGlossaryList("");
+}
+
+function renderGlossaryList(filter) {
+  const f = filter.trim().toLowerCase();
+  const items = GLOSSARY.filter(([en, tr]) => !f || en.toLowerCase().includes(f) || tr.toLowerCase().includes(f));
+  $("#gllist").innerHTML = items.length
+    ? `<div class="gl-list">${items.map(([en, tr]) => `
+        <div class="gl-row">
+          <button class="gl-speak" onclick="speak(${JSON.stringify(en).replace(/"/g, "&quot;")},'en')">🔊</button>
+          <div class="gl-words"><b>${esc(en)}</b><span>${esc(tr)}</span></div>
+        </div>`).join("")}</div>`
+    : `<p class="gl-empty">${t("noResult")}</p>`;
 }
 
 /* ---------- başlat ---------- */

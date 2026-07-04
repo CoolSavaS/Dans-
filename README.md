@@ -12,6 +12,8 @@ Ticari değildir — kişisel çalışma için hazırlanmıştır. ❤️
 - 📝 **Deneme Sınavı** — Gerçek DVSA formatı: 50 soru, 57 dakika, geçme notu 43. Sonunda yanlışlarını animasyonla tek tek görebilirsin.
 - 🚸 **Trafik Levhaları** — Highway Code işaretleri (SVG çizim) Türkçe + İngilizce isimleriyle, ayrıca levha quizi. Levha soruları ana quiz ve deneme sınavına da karışır.
 - 🔁 **Yanlışlarım** — Yanlış yaptığın sorular hatırlanır; bu modda sadece onları animasyonla tekrar çalışırsın.
+- 📖 **Sözlük** — ~90 sınav teriminin İngilizce → Türkçe karşılığı; arama kutusu ve sesli telaffuz.
+- 📊 Quiz ekranında **konu bazlı başarı yüzdesi** — hangi konuya çalışman gerektiğini gösterir.
 - 🗓️ **Sınav Günü Rehberi** — Sınav formatı, hazard perception bölümü ve taktikler; Türkçe + İngilizce, sesli dinlenebilir.
 - 🇹🇷/🇬🇧 Arayüz dili tek tuşla değişir; soruları **İngilizce**, **Türkçe** veya **ikisi birden** görebilirsin (gerçek sınav İngilizce olduğu için "ikisi" önerilir).
 - 📈 İlerleme telefonda saklanır (localStorage) — hesap gerekmez.
