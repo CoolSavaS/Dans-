@@ -10,7 +10,9 @@ Ticari değildir — kişisel çalışma için hazırlanmıştır. ❤️
 - ❓ **Quiz Modu** — Soruyu yanlış yaptığında animasyon devreye girer: sahne canlanır, doğru cevabı *"İngilizce şöyle diyor → Türkçesi şu"* diye çift dilli açıklar, mantığını ve ezber kodunu gösterir.
 - 🃏 **Kart Modu** — 100 hızlı ezber kartı; çevir, bildim/bilemedim diye işaretle.
 - 📝 **Deneme Sınavı** — Gerçek DVSA formatı: 50 soru, 57 dakika, geçme notu 43. Sonunda yanlışlarını animasyonla tek tek görebilirsin.
-- 🚸 **Trafik Levhaları** — Highway Code işaretleri (SVG çizim) Türkçe + İngilizce isimleriyle, ayrıca levha quizi.
+- 🚸 **Trafik Levhaları** — Highway Code işaretleri (SVG çizim) Türkçe + İngilizce isimleriyle, ayrıca levha quizi. Levha soruları ana quiz ve deneme sınavına da karışır.
+- 🔁 **Yanlışlarım** — Yanlış yaptığın sorular hatırlanır; bu modda sadece onları animasyonla tekrar çalışırsın.
+- 🗓️ **Sınav Günü Rehberi** — Sınav formatı, hazard perception bölümü ve taktikler; Türkçe + İngilizce, sesli dinlenebilir.
 - 🇹🇷/🇬🇧 Arayüz dili tek tuşla değişir; soruları **İngilizce**, **Türkçe** veya **ikisi birden** görebilirsin (gerçek sınav İngilizce olduğu için "ikisi" önerilir).
 - 📈 İlerleme telefonda saklanır (localStorage) — hesap gerekmez.
 - 📱 **PWA**: iPhone, Android ve bilgisayarda çalışır; internet olmadan da açılır.

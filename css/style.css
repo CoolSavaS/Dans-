@@ -66,7 +66,25 @@ button { font-family: inherit; cursor: pointer; border: none; }
 .mc-mock    { border-color: var(--bad); }
 .mc-signs   { border-color: var(--brand); }
 .mc-mistakes { border-color: #fd9644; }
+.mc-guide { border-color: #26de81; }
 .narrate-btn { margin-top: 10px; }
+
+/* levha sorusu */
+.q-sign { width: 96px; margin: 0 auto 10px; }
+.q-sign svg { width: 100%; height: auto; }
+.sign-hero { background: #eef7ff; padding: 26px 0; display: flex; justify-content: center; }
+.sign-hero-svg { width: 150px; }
+.sign-hero-svg svg { width: 100%; height: auto; }
+.an-pop-css { animation: pop .55s cubic-bezier(.2, 1.6, .4, 1) both; }
+
+/* sınav rehberi */
+.guide-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+.guide-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px; }
+.guide-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 1rem; }
+.guide-icon { font-size: 1.5rem; }
+.guide-card .scene { margin-bottom: 10px; }
+.guide-tr, .guide-en { font-size: .9rem; line-height: 1.55; margin-bottom: 8px; }
+.guide-en { color: var(--sub); }
 
 .qlang-row { display: flex; align-items: center; gap: 8px; margin: 18px 2px; font-size: .85rem; color: var(--sub); flex-wrap: wrap; }
 .chip { background: var(--card); border-radius: 20px; padding: 6px 14px; font-weight: 700; box-shadow: var(--shadow); color: var(--sub); }

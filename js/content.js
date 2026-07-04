@@ -122,6 +122,24 @@ const LESSONS = [
     qids: ["country_road", "sharp_bend", "concealed_bend", "narrow_road", "animals", "meeting", "narrow_bridge", "ped_rural", "level_lights", "level_barrier"] },
 ];
 
+/* ---------- LEVHA SORULARI — ana quiz ve sınava karışır ---------- */
+(function addSignQuestions() {
+  const pick = ["sstop", "sgiveway", "snoentry", "snoovertake", "snsl", "sminirb", "wslippery", "wtwoway", "wnarrow", "wice", "wlevelbar", "wzebra", "snowait", "snostop", "iendmw", "inothrough"];
+  for (const id of pick) {
+    const s = SIGNS.find((x) => x.id === id);
+    if (!s) continue;
+    QUESTIONS.push({
+      id: "sq_" + id, cat: "rules", scene: "signshape", type: "fact",
+      ezber: "Shape + colour = meaning", signId: id,
+      q: { en: "What does this sign mean?", tr: "Bu levha ne anlama geliyor?" },
+      a: { en: s.en, tr: s.tr },
+      logic: { tr: "Şekli ve rengi oku: kırmızı çember yasak, üçgen uyarı, mavi talimat.",
+               en: "Read shape and colour: red circle = prohibition, triangle = warning, blue = instruction." },
+      w: null, signWrongs: true,
+    });
+  }
+})();
+
 /* ---------- ARAYÜZ METİNLERİ ---------- */
 const UI = {
   appName:      { tr: "Ehliyet Kankam UK", en: "Ehliyet Kankam UK" },
@@ -193,4 +211,34 @@ const UI = {
   both:        { tr: "İkisi", en: "Both" },
   nonCommercial: { tr: "Kişisel kullanım içindir • ticari değildir ❤️", en: "Personal use only • non-commercial ❤️" },
   installHint: { tr: "📱 Telefona kurmak için: tarayıcı menüsü → “Ana Ekrana Ekle”", en: "📱 To install: browser menu → “Add to Home Screen”" },
+  guide:       { tr: "Sınav Günü Rehberi", en: "Exam Day Guide" },
+  guideSub:    { tr: "Format, hazard perception, ipuçları", en: "Format, hazard perception, tips" },
 };
+
+/* ---------- SINAV GÜNÜ REHBERİ ---------- */
+const GUIDE = [
+  { icon: "📋", scene: "generic",
+    title: { tr: "Sınav iki bölümden oluşur", en: "The test has two parts" },
+    tr: "1) Çoktan seçmeli: 50 soru, 57 dakika, geçmek için 43 doğru gerekir. 2) Hazard Perception (tehlike algılama): video izleyip tehlikeyi görünce tıklarsın. İkisini de aynı gün, aynı oturumda geçmen gerekir.",
+    en: "1) Multiple choice: 50 questions, 57 minutes, you need 43 correct to pass. 2) Hazard perception: you watch video clips and click when you see a hazard. You must pass both in the same sitting." },
+  { icon: "🎯", scene: "distance",
+    title: { tr: "Hazard Perception nasıl çalışır?", en: "How does hazard perception work?" },
+    tr: "14 video klip izlersin; 15 gelişen tehlike vardır (bir klipte iki tane olur). Tehlike gelişmeye başladığı anda tıkla — erken ya da geç tıklarsan az puan alırsın. 75 üzerinden 44 puan gerekir. Sürekli ritmik tıklarsan o klipten sıfır alırsın!",
+    en: "You watch 14 clips with 15 developing hazards (one clip has two). Click as soon as the hazard starts developing — too early or too late scores less. You need 44 out of 75. Clicking in a rhythm scores zero for that clip!" },
+  { icon: "🇬🇧", scene: "phone",
+    title: { tr: "Sınav İngilizce — ama hazırsın!", en: "The test is in English — but you're ready!" },
+    tr: "Sorulardaki anahtar kelimeleri tanı: skid (kayma), give way (yol ver), pedestrian (yaya), junction (kavşak), overtake (sollama). Bu uygulamada İngilizcesini hep duyduğun için sınavda kelimeler tanıdık gelecek.",
+    en: "Recognise the key words: skid, give way, pedestrian, junction, overtake. Because you always heard the English in this app, the words will feel familiar in the exam." },
+  { icon: "🛡️", scene: "generic",
+    title: { tr: "Altın kural", en: "The golden rule" },
+    tr: "İki cevap arasında kaldıysan HER ZAMAN en güvenli, en yavaş, en sabırlı seçeneği işaretle. Theory test asla 'hızlan', 'korna çal', 'riski göze al' cevabını doğru yapmaz.",
+    en: "If you're stuck between two answers, ALWAYS pick the safest, slowest, most patient option. The theory test never rewards 'speed up', 'sound your horn' or 'take the risk'." },
+  { icon: "🚩", scene: "mirrors",
+    title: { tr: "Soru işaretleme taktiği", en: "The flag tactic" },
+    tr: "Emin olmadığın soruyu 'flag' (işaretle) ile işaretleyip geç; sonunda dönebilirsin. 57 dakika 50 soru için boldur — acele etme, soruyu iki kez oku.",
+    en: "Flag any question you're unsure about and move on; you can return at the end. 57 minutes is plenty for 50 questions — don't rush, read each question twice." },
+  { icon: "🪪", scene: "belt",
+    title: { tr: "Yanında ne götüreceksin?", en: "What to bring?" },
+    tr: "Geçerli (provisional) ehliyetini götürmeyi unutma — yoksa sınava giremezsin ve ücret yanar. Erken git, telefonunu dolaba kilitleyeceksin.",
+    en: "Bring your provisional licence — without it you can't sit the test and lose the fee. Arrive early; phones are locked away." },
+];

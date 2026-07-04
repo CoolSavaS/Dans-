@@ -53,7 +53,9 @@ function speak(text, lang) {
 /* Şık üretimi: özel yanlışlar varsa onlar, yoksa tipe uygun havuzdan */
 function buildOptions(q) {
   let wrongs;
-  if (q.w) wrongs = q.w;
+  if (q.signWrongs) {
+    wrongs = shuffle(SIGNS.filter((s) => s.id !== q.signId)).slice(0, 3).map((s) => ({ en: s.en, tr: s.tr }));
+  } else if (q.w) wrongs = q.w;
   else {
     const pool = q.type === "why" ? POOL_WHY : q.type === "when" ? POOL_WHEN : POOL_DO;
     const corrWords = (q.a.en.toLowerCase().match(/[a-zçğıöşü]+/g) || []).filter((w) => w.length > 3);
@@ -67,6 +69,32 @@ function buildOptions(q) {
   }
   const opts = shuffle([{ ...q.a, ok: true }, ...wrongs.map((w) => ({ ...w, ok: false }))]);
   return opts;
+}
+
+/* Levha sorusu ise soru kartında levhayı göster */
+function signBlock(q) {
+  if (!q.signId) return "";
+  const s = SIGNS.find((x) => x.id === q.signId);
+  return s ? `<div class="q-sign">${s.svg}</div>` : "";
+}
+
+/* Ses efektleri (WebAudio — kısa ding / buzz) */
+function sfx(ok) {
+  try {
+    const ctx = sfx.ctx || (sfx.ctx = new (window.AudioContext || window.webkitAudioContext)());
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    const t = ctx.currentTime;
+    if (ok) {
+      o.type = "sine"; o.frequency.setValueAtTime(660, t); o.frequency.setValueAtTime(880, t + 0.1);
+      g.gain.setValueAtTime(0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+      o.start(t); o.stop(t + 0.35);
+    } else {
+      o.type = "square"; o.frequency.setValueAtTime(160, t);
+      g.gain.setValueAtTime(0.07, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+      o.start(t); o.stop(t + 0.3);
+    }
+  } catch (e) { /* ses yoksa sessiz devam */ }
 }
 
 function qText(obj) {
@@ -125,6 +153,8 @@ function home() {
       <span class="mc-icon">🚸</span><span class="mc-title">${t("signs")}</span><span class="mc-sub">${t("signsSub")}</span></button>
     <button class="menu-card mc-mistakes" onclick="startQuiz('mistakes')">
       <span class="mc-icon">🔁</span><span class="mc-title">${t("mistakes")}</span><span class="mc-sub">${t("mistakesSub")}</span></button>
+    <button class="menu-card mc-guide wide" onclick="setView(guideView)">
+      <span class="mc-icon">🗓️</span><span class="mc-title">${t("guide")}</span><span class="mc-sub">${t("guideSub")}</span></button>
   </nav>
   <div class="qlang-row">
     <span>${t("qLangLabel")}:</span>
@@ -157,7 +187,12 @@ let modalCb = null;
 function openExplain(q, isWrong, cb) {
   modalCb = cb || null;
   document.body.insertAdjacentHTML("beforeend", explainHTML(q, isWrong));
-  renderScene(q.scene, $("#modalScene"));
+  if (q.signId) {
+    const s = SIGNS.find((x) => x.id === q.signId);
+    $("#modalScene").innerHTML = `<div class="sign-hero"><div class="sign-hero-svg an-pop-css">${s ? s.svg : ""}</div></div>`;
+  } else {
+    renderScene(q.scene, $("#modalScene"));
+  }
   // otomatik sesli anlatım: önce EN sonra TR
   setTimeout(() => {
     if (!state.speech) return;
@@ -333,7 +368,7 @@ function renderQuiz() {
   app().innerHTML = `${header(true, `${t("quiz")} ${quiz.i + 1}/${quiz.qs.length}`)}
   <div class="quiz-top"><span class="badge">${CATS[q.cat].icon} ${CATS[q.cat][state.lang]}</span>
   <span class="badge score">⭐ ${quiz.score}</span></div>
-  <div class="question-card">${qText(q.q)}</div>
+  <div class="question-card">${signBlock(q)}${qText(q.q)}</div>
   <div class="options">
     ${opts.map((o, idx) => `<button class="opt" id="opt${idx}" onclick="answerQuiz(${idx})">
       ${state.qlang === "en" ? esc(o.en) : state.qlang === "tr" ? esc(o.tr) : `<span class="o-en">${esc(o.en)}</span><span class="o-tr">${esc(o.tr)}</span>`}
@@ -353,10 +388,11 @@ function answerQuiz(idx) {
   if (o.ok) {
     quiz.score++;
     $("#opt" + idx).classList.add("right");
-    confetti();
+    sfx(true); confetti();
     setTimeout(nextQuiz, 900);
   } else {
     $("#opt" + idx).classList.add("wrongopt");
+    sfx(false);
     setTimeout(() => openExplain(q, true, nextQuiz), 650);
   }
 }
@@ -423,7 +459,7 @@ function renderMock() {
   <div class="quiz-top"><span class="badge">${t("question")} ${mock.i + 1}/50</span>
   <span class="badge time" id="mockTime">${fmtTime(mock.sec)}</span></div>
   <div class="lesson-progress"><div style="width:${(mock.i / 50) * 100}%"></div></div>
-  <div class="question-card">${qText(q.q)}</div>
+  <div class="question-card">${signBlock(q)}${qText(q.q)}</div>
   <div class="options">
     ${opts.map((o, idx) => `<button class="opt" onclick="answerMock(${idx})">
       ${state.qlang === "en" ? esc(o.en) : state.qlang === "tr" ? esc(o.tr) : `<span class="o-en">${esc(o.en)}</span><span class="o-tr">${esc(o.tr)}</span>`}
@@ -553,8 +589,9 @@ function answerSign(idx) {
   const o = signQuiz.opts[idx];
   const okIdx = signQuiz.opts.findIndex((x) => x.ok);
   $("#opt" + okIdx).classList.add("right");
-  if (o.ok) { signQuiz.score++; confetti(); }
+  if (o.ok) { signQuiz.score++; sfx(true); confetti(); }
   else {
+    sfx(false);
     $("#opt" + idx).classList.add("wrongopt");
     const s = signQuiz.qs[signQuiz.i];
     speak(s.en + ". " + s.tr, "en");
@@ -568,6 +605,28 @@ function answerSign(idx) {
         <button class="big-btn ghost" onclick="setView(signsView)">${t("browse")}</button></div>`;
     } else renderSignQuiz();
   }, o.ok ? 900 : 2200);
+}
+
+/* =====================================================================
+   SINAV GÜNÜ REHBERİ
+   ===================================================================== */
+function guideView() {
+  app().innerHTML = `${header(true, t("guide"))}
+  <p class="page-sub">🗓️ ${t("guideSub")}</p>
+  <div class="guide-list">
+    ${GUIDE.map((g, i) => `
+      <div class="guide-card">
+        <div class="guide-head"><span class="guide-icon">${g.icon}</span><b>${g.title[state.lang]}</b></div>
+        <div class="scene" id="guideScene${i}"></div>
+        <p class="guide-tr">🇹🇷 ${g.tr}</p>
+        <p class="guide-en">🇬🇧 ${g.en}</p>
+        <button class="mini-btn" onclick="speak(${JSON.stringify(g.en).replace(/"/g, "&quot;")},'en')">${t("listenEN")}</button>
+        <button class="mini-btn" onclick="speak(${JSON.stringify(g.tr).replace(/"/g, "&quot;")},'tr')">${t("listenTR")}</button>
+      </div>`).join("")}
+  </div>
+  <button class="big-btn" onclick="setView(mockStart)">📝 ${t("mock")} →</button>
+  <button class="big-btn ghost" onclick="goHome()">${t("backHome")}</button>`;
+  GUIDE.forEach((g, i) => renderScene(g.scene, $("#guideScene" + i)));
 }
 
 /* ---------- başlat ---------- */
