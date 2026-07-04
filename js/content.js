@@ -111,6 +111,16 @@ const LESSONS = [
              en: "Yellow lines, zigzags, bus lanes and the 1.5 m rule for cyclists." },
     qids: ["dbl_yellow", "sgl_yellow", "zigzag", "bus_lane", "cyclist_pass", "double_parked", "single_cw", "dual_cw"] },
 
+  { id: "l_distance", icon: "📐", title: { tr: "Durma Mesafeleri (Ezber Şart!)", en: "Stopping Distances (Must Memorise!)" },
+    intro: { tr: "Sınavın en sevdiği rakamlar: 30 mph'de 23 metre, 50'de 53, 70'te 96. Düşünme + fren = toplam durma. Hadi ezberleyelim!",
+             en: "The exam's favourite numbers: 23 metres at 30 mph, 53 at 50, 96 at 70. Thinking + braking = overall stopping. Let's memorise!" },
+    qids: ["thinking_dist", "stop30", "stop50", "stop70", "stopping_dist", "tailgate"] },
+
+  { id: "l_firstaid", icon: "🚑", title: { tr: "Kaza Yerinde İlk Yardım", en: "First Aid at an Incident" },
+    intro: { tr: "Umarım hiç gerekmez ama sınavda kesin sorulur: önce güvenlik, sonra 999, nefes yoksa kalp masajı, kaska dokunma!",
+             en: "Hopefully never needed, but always examined: safety first, then 999, CPR if not breathing, leave the helmet on!" },
+    qids: ["incident_first", "casualty_breathing", "helmet", "mot", "insurance"] },
+
   { id: "l_signs", icon: "🪧", title: { tr: "Levha Okuma Sanatı", en: "The Art of Reading Signs" },
     intro: { tr: "Şekli gör, anlamını bil! Kırmızı çember yasak der, üçgen uyarır, mavi daire talimat verir. Bu kodu çözersen hiç görmediğin levhayı bile okursun.",
              en: "See the shape, know the meaning! Red circles prohibit, triangles warn, blue circles instruct. Crack this code and you can read signs you've never seen." },

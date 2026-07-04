@@ -705,6 +705,90 @@ Q("emergency_stop", "driver", "distance", "when", "Sudden danger",
   "Önce aynaya bakacak zaman olmayabilir — sıkı ve kontrollü fren yap.",
   "There may be no time for mirrors — brake firmly and keep control.");
 
+Q("stop30", "driver", "distance", "fact", "30 mph = 23 m",
+  "What is the overall stopping distance at 30 mph in good conditions?",
+  "İyi koşullarda 30 mph hızda toplam durma mesafesi kaçtır?",
+  "23 metres (75 feet)", "23 metre (75 fit)",
+  "9 m düşünme + 14 m fren = 23 m (yaklaşık 6 araba boyu).", "9 m thinking + 14 m braking = 23 m (about 6 car lengths).",
+  [{ en: "13 metres", tr: "13 metre" },
+   { en: "36 metres", tr: "36 metre" },
+   { en: "53 metres", tr: "53 metre" }]);
+
+Q("stop50", "driver", "distance", "fact", "50 mph = 53 m",
+  "What is the overall stopping distance at 50 mph in good conditions?",
+  "İyi koşullarda 50 mph hızda toplam durma mesafesi kaçtır?",
+  "53 metres (175 feet)", "53 metre (175 fit)",
+  "15 m düşünme + 38 m fren = 53 m.", "15 m thinking + 38 m braking = 53 m.",
+  [{ en: "23 metres", tr: "23 metre" },
+   { en: "73 metres", tr: "73 metre" },
+   { en: "96 metres", tr: "96 metre" }]);
+
+Q("stop70", "driver", "distance", "fact", "70 mph = 96 m",
+  "What is the overall stopping distance at 70 mph in good conditions?",
+  "İyi koşullarda 70 mph hızda toplam durma mesafesi kaçtır?",
+  "96 metres (315 feet)", "96 metre (315 fit)",
+  "21 m düşünme + 75 m fren = 96 m (yaklaşık 24 araba boyu).", "21 m thinking + 75 m braking = 96 m (about 24 car lengths).",
+  [{ en: "53 metres", tr: "53 metre" },
+   { en: "73 metres", tr: "73 metre" },
+   { en: "120 metres", tr: "120 metre" }]);
+
+Q("thinking_dist", "driver", "distance", "fact", "Thinking ≈ speed",
+  "What is 'thinking distance'?",
+  "'Düşünme mesafesi' (thinking distance) nedir?",
+  "The distance travelled while you react", "Tepki verene kadar aracın aldığı yol",
+  "Yorgunluk, alkol ve telefon düşünme mesafesini uzatır.", "Tiredness, alcohol and phones increase thinking distance.",
+  [{ en: "The distance travelled while braking", tr: "Fren yaparken alınan yol" },
+   { en: "The gap to the car in front",          tr: "Öndeki araçla aradaki boşluk" },
+   { en: "The length of your vehicle",           tr: "Aracının uzunluğu" }]);
+
+Q("incident_first", "driver", "siren", "do", "Incident: warn others",
+  "What should you do first when you arrive at an incident (crash scene)?",
+  "Bir kaza yerine ilk vardığında ne yapmalısın?",
+  "Warn other traffic and make the scene safe", "Diğer trafiği uyar ve bölgeyi güvene al",
+  "Dörtlüleri yak; yeni kaza olmasını önle, sonra 999'u ara.", "Hazards on; prevent further collisions, then call 999.");
+
+Q("casualty_breathing", "driver", "siren", "do", "Not breathing = CPR",
+  "What should you do if a casualty is not breathing?",
+  "Kazazede nefes almıyorsa ne yapmalısın?",
+  "Start CPR (chest compressions)", "Kalp masajına (CPR) başla",
+  "Göğüs ortasına sert ve hızlı bas (dakikada 100-120).", "Push hard and fast in the centre of the chest (100–120/min).",
+  [{ en: "Give them water",                    tr: "Su içir" },
+   { en: "Move them into a car",               tr: "Bir arabaya taşı" },
+   { en: "Wait for the ambulance without acting", tr: "Hiçbir şey yapmadan ambulansı bekle" }]);
+
+Q("helmet", "driver", "siren", "fact", "Helmet: don't remove",
+  "Should you remove an injured motorcyclist's helmet?",
+  "Yaralı motosikletlinin kaskını çıkarmalı mısın?",
+  "No, unless it is essential (e.g. not breathing)", "Hayır — zorunlu olmadıkça (örn. nefes almıyorsa)",
+  "Kask çıkarmak boyun yaralanmasını ağırlaştırabilir.", "Removing it can worsen a neck injury.",
+  [{ en: "Yes, always and immediately",  tr: "Evet, her zaman hemen" },
+   { en: "Yes, to make them comfortable", tr: "Evet, rahat etmesi için" },
+   { en: "Only if they ask you not to",  tr: "Sadece istemezse" }]);
+
+Q("mot", "vehicle", "dash", "fact", "MOT: 3 yıl sonra her yıl",
+  "When does a new car first need an MOT test?",
+  "Sıfır araç ilk MOT muayenesine ne zaman girer?",
+  "When it is 3 years old", "3 yaşına geldiğinde",
+  "Sonrasında her yıl yenilenir; MOT'suz araç yola çıkamaz.", "Then every year; no MOT = no driving (except to a booked test).",
+  [{ en: "When it is 1 year old",  tr: "1 yaşına geldiğinde" },
+   { en: "When it is 5 years old", tr: "5 yaşına geldiğinde" },
+   { en: "Only when it is sold",   tr: "Sadece satılırken" }]);
+
+Q("insurance", "vehicle", "dash", "fact", "Min: third party",
+  "What is the minimum insurance cover required by law?",
+  "Yasal olarak zorunlu en düşük sigorta kapsamı nedir?",
+  "Third party", "Üçüncü şahıs (third party)",
+  "Başkasına verdiğin zararı karşılar; kendi aracını karşılamaz.", "Covers damage to others, not your own car.",
+  [{ en: "Fully comprehensive",     tr: "Tam kasko (fully comprehensive)" },
+   { en: "Third party, fire and theft", tr: "Üçüncü şahıs + yangın + hırsızlık" },
+   { en: "No insurance is required", tr: "Sigorta zorunlu değildir" }]);
+
+Q("eco", "vehicle", "generic", "do", "Smooth = eco",
+  "How can you drive more fuel-efficiently?",
+  "Nasıl daha az yakıt tüketerek sürersin?",
+  "Accelerate and brake smoothly", "Yumuşak hızlan ve yumuşak fren yap",
+  "Ani gaz-fren yakıtı %15'e kadar artırır; bagajdaki yükü azalt.", "Harsh acceleration wastes up to 15%; remove extra weight.");
+
 Q("safest", "driver", "generic", "do", "Choose the safest",
   "In the theory test, if you're unsure between two answers, what should you do?",
   "Teori sınavında iki cevap arasında kaldıysan ne yapmalısın?",
