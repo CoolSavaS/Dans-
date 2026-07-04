@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="110" fill="#4b7bec"/>
+  <rect x="40" y="40" width="432" height="432" rx="80" fill="#5a8af5"/>
+  <g transform="translate(96,180)">
+    <ellipse cx="160" cy="196" rx="170" ry="22" fill="rgba(0,0,0,.18)"/>
+    <rect x="0" y="80" width="320" height="96" rx="40" fill="#ff6b6b"/>
+    <path d="M64 84 Q84 18 156 18 H196 Q262 18 288 84 Z" fill="#ff6b6b"/>
+    <path d="M88 78 Q104 34 152 34 H172 V78 Z" fill="#dff3fb"/>
+    <path d="M186 34 H196 Q244 34 262 78 H186 Z" fill="#dff3fb"/>
+    <circle cx="134" cy="56" r="9" fill="#333"/><circle cx="212" cy="56" r="9" fill="#333"/>
+    <path d="M156 66 q18 14 36 0" stroke="#333" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <circle cx="72" cy="182" r="42" fill="#2f3640"/><circle cx="72" cy="182" r="18" fill="#b0b7c3"/>
+    <circle cx="248" cy="182" r="42" fill="#2f3640"/><circle cx="248" cy="182" r="18" fill="#b0b7c3"/>
+  </g>
+  <g transform="translate(320,84)">
+    <circle cx="60" cy="60" r="58" fill="#fff"/>
+    <circle cx="60" cy="60" r="58" fill="none" stroke="#e74c3c" stroke-width="14"/>
+    <text x="60" y="82" font-size="58" font-weight="800" font-family="Arial, sans-serif" text-anchor="middle" fill="#333">L</text>
+  </g>
+</svg>
