@@ -237,6 +237,15 @@ const UI = {
   loadedOk:    { tr: "Yedek yüklendi! 🎉", en: "Backup loaded! 🎉" },
   badBackup:   { tr: "Kod çözülemedi — tam kopyaladığından emin ol.", en: "Couldn't read the code — make sure you copied all of it." },
   confirmReset: { tr: "Tüm ilerleme silinsin mi? (skorlar, yanlışlar, dersler)", en: "Delete all progress? (scores, mistakes, lessons)" },
+  profiles:     { tr: "Profiller", en: "Profiles" },
+  whoTitle:     { tr: "Kim çalışıyor? 👋", en: "Who's studying? 👋" },
+  whoSub:       { tr: "Herkesin ilerlemesi ayrı tutulur — skorlar birbirine karışmaz.", en: "Everyone's progress is kept separate — scores never mix." },
+  namePh:       { tr: "İsmini yaz…", en: "Type your name…" },
+  createProfile: { tr: "Profili oluştur", en: "Create profile" },
+  addProfile:   { tr: "➕ Yeni profil ekle", en: "➕ Add new profile" },
+  activeLabel:  { tr: "aktif", en: "active" },
+  confirmDelete: { tr: "Bu profil ve tüm ilerlemesi silinsin mi?", en: "Delete this profile and all its progress?" },
+  trVoiceMissing: { tr: "📢 Telefonda Türkçe ses yüklü değil. Ayarlar → Erişilebilirlik → Seslendirme'den Türkçe ses indirirsen sesli anlatım Türkçe de çalışır.", en: "📢 No Turkish voice installed. Add one in Settings → Accessibility → Spoken Content for Turkish narration." },
 };
 
 /* ---------- SINAV SÖZLÜĞÜ — İngilizce terim → Türkçe karşılık ---------- */

@@ -37,6 +37,13 @@ function walker(cls = "", color = "#3867d6", scale = 1) {
     <path class="an-arm2" d="M0 -22 L8 -10"  stroke="${color}" stroke-width="4.4" stroke-linecap="round"/></g>`;
 }
 
+
+/* Okunaklı başlık şeridi — yazı asla şekillerle karışmaz */
+function cap(text, x = 12, y = 12, color = "#2d3436", dark = false) {
+  const w = Math.round(text.length * 7.7 + 24);
+  return `<g><rect x="${x}" y="${y}" width="${w}" height="27" rx="13.5" fill="${dark ? "rgba(18,23,40,.82)" : "rgba(255,255,255,.94)"}"/><text x="${x + 12}" y="${y + 19}" font-size="13.5" font-weight="800" fill="${dark ? "#fff" : color}">${text}</text></g>`;
+}
+
 function bubble(x, y, text, cls = "") {
   return `<g class="${cls}"><rect x="${x - 8}" y="${y - 20}" rx="9" width="${text.length * 8.2 + 18}" height="26" fill="#fff" stroke="#333" stroke-width="2"/><text x="${x + 1}" y="${y - 2}" font-size="14" font-weight="700" fill="#333">${text}</text></g>`;
 }
@@ -51,7 +58,7 @@ const SCENES = {
     <path d="M60 220 q30 -8 55 -1" fill="none" stroke="#39424e" stroke-width="5" class="an-fadein"/>
     <g transform="translate(140,158)">${toonCar("an-skid", "#ff6b6b")}</g>
     ${bubble(160, 130, "Whoa!", "an-pop")}
-    <text x="20" y="30" font-size="16" font-weight="800" fill="#c0392b" class="an-blink">KAYIYOR / SKIDDING!</text></svg>`,
+    ${cap("⚠️ KAYIYOR / SKIDDING!", 12, 12, "#c0392b")}</svg>`,
 
   rain: () => `<svg viewBox="0 0 400 240"><rect width="400" height="240" fill="#7f9bb3"/>
     <g class="an-cloud1"><ellipse cx="90" cy="40" rx="42" ry="17" fill="#57708a"/><ellipse cx="130" cy="32" rx="30" ry="14" fill="#57708a"/></g>
@@ -61,8 +68,10 @@ const SCENES = {
     ${GRASS.replace("#8fd06c", "#6fae55")}${ROAD}
     <g transform="translate(30,158)">${toonCar("an-drive-slow", "#4b7bec")}</g>
     <g class="an-fadein">
-      <rect x="30" y="118" width="120" height="12" rx="6" fill="#2ecc71"/><text x="34" y="113" font-size="11" font-weight="700" fill="#fff">KURU / DRY</text>
-      <rect x="30" y="140" width="240" height="12" rx="6" fill="#e74c3c" class="an-growbar"/><text x="34" y="137" font-size="11" font-weight="700" fill="#ffe1e1">ISLAK / WET = 2×</text></g></svg>`,
+      ${cap("Durma mesafesi / Stopping distance", 26, 88)}
+      <rect x="30" y="122" width="120" height="15" rx="7.5" fill="#2ecc71"/><text x="37" y="133.5" font-size="10.5" font-weight="800" fill="#fff">KURU / DRY</text>
+      <rect x="30" y="142" width="240" height="15" rx="7.5" fill="#e74c3c" class="an-growbar"/></g>
+      <text x="37" y="153.5" font-size="10.5" font-weight="800" fill="#fff" class="an-fadein">ISLAK / WET = 2×</text></svg>`,
 
   ice: () => `<svg viewBox="0 0 400 240"><rect width="400" height="240" fill="#dfefff"/>
     <g class="an-snow" fill="#fff" stroke="#bcd9f0" stroke-width=".6">
@@ -72,12 +81,12 @@ const SCENES = {
     <g stroke="#fff" stroke-width="4" stroke-dasharray="22 18"><line x1="0" y1="197" x2="400" y2="197"/></g>
     <g transform="translate(120,158)">${toonCar("an-slide", "#a55eea")}</g>
     <text x="255" y="120" font-size="34" class="an-pop">🥶</text>
-    <text x="20" y="34" font-size="15" font-weight="800" fill="#3867d6">BUZ: Tutuş yok! / ICE: No grip!</text></svg>`,
+    ${cap("🧊 BUZ: Tutuş yok! / ICE: No grip!", 12, 12, "#3867d6")}</svg>`,
 
   fog: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}${ROAD}
     <g transform="translate(40,158)">${toonCar("an-drive-slow", "#f7b731", `<path d="M114 26 L165 16 L165 44 L114 36 Z" fill="#fff7c9" opacity=".85"/>`)}</g>
     <g class="an-fog"><ellipse cx="260" cy="120" rx="150" ry="90" fill="#e8ecef" opacity=".92"/><ellipse cx="360" cy="180" rx="130" ry="80" fill="#dfe4e8" opacity=".95"/><ellipse cx="300" cy="60" rx="120" ry="60" fill="#eef1f3" opacity=".9"/></g>
-    <text x="18" y="34" font-size="15" font-weight="800" fill="#576574">SİS / FOG — görüş &lt; 100 m ise sis lambası</text></svg>`,
+    ${cap("🌫️ SİS / FOG — sis lambası: görüş 100 m altı", 12, 12, "#576574")}</svg>`,
 
   distance: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}${ROAD}
     <g transform="translate(240,158)">${toonCar("", "#20bf6b")}</g>
@@ -91,7 +100,7 @@ const SCENES = {
     <rect y="168" width="400" height="58" fill="#3d4453"/><g stroke="#c8cdd6" stroke-width="4" stroke-dasharray="22 18"><line x1="0" y1="197" x2="400" y2="197"/></g>
     <g transform="translate(30,158)">${toonCar("an-drive-slow", "#4b6584", `<path d="M114 24 L200 10 L200 48 L114 38 Z" fill="#fff9c4" opacity=".55" class="an-beam"/>`)}</g>
     <g transform="translate(300,178)" class="an-fadein">${walker("", "#111", 1.1)}</g>
-    <text x="18" y="90" font-size="14" font-weight="800" fill="#f5f0d8" class="an-blink">Koyu giysili yaya — zor görülür!</text></svg>`,
+    ${cap("🌙 Koyu giysili yaya — çok zor görülür!", 12, 12, "#fff", true)}</svg>`,
 
   country: () => `<svg viewBox="0 0 400 240">${SKY_DAY}
     <path d="M0 160 Q90 120 200 150 Q310 180 400 140 V240 H0 Z" fill="#7cbf5f"/>
@@ -108,7 +117,7 @@ const SCENES = {
     <g class="an-beacon2"><circle cx="352" cy="120" r="9" fill="#f39c12"/><rect x="349" y="129" width="6" height="40" fill="#39424e"/></g>
     <g transform="translate(30,158)">${toonCar("an-stopline", "#45aaf2")}</g>
     <g class="an-cross" transform="translate(262,190)">${walker("an-walkanim", "#8854d0", 1.15)}</g>
-    <text x="18" y="34" font-size="15" font-weight="800" fill="#2d3436">Zebra geçidi: yaya kral 👑</text></svg>`,
+    ${cap("🚸 Zebra geçidi: yaya kraldır 👑", 12, 12)}</svg>`,
 
   pelican: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}
     <rect y="168" width="400" height="58" fill="#5b6270"/>
@@ -117,7 +126,7 @@ const SCENES = {
     <g transform="translate(150,60)">${trafficLightSVG("an-tl-redamber")}</g>
     <g transform="translate(24,158)">${toonCar("an-stopline2", "#26de81")}</g>
     <g transform="translate(280,190)">${walker("an-walkanim", "#eb3b5a", 1.15)}</g>
-    <text x="18" y="34" font-size="15" font-weight="800" fill="#2d3436">Pelikan geçidi / Pelican crossing</text></svg>`,
+    ${cap("🚦 Pelikan geçidi / Pelican crossing", 12, 12)}</svg>`,
 
   patrol: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}${ROAD}
     <g transform="translate(30,158)">${toonCar("an-stopline", "#fc5c65")}</g>
@@ -130,31 +139,33 @@ const SCENES = {
         <g transform="translate(24,-58)"><circle r="15" fill="#e74c3c" stroke="#fff" stroke-width="3"/><text y="4.6" font-size="9.5" font-weight="800" fill="#fff" text-anchor="middle">STOP</text><rect x="-1.6" y="15" width="3.2" height="18" fill="#95a5a6"/></g></g></g>
     <g transform="translate(310,188)">${walker("an-walkanim", "#3867d6", .9)}</g>
     <g transform="translate(338,190)">${walker("an-walkanim", "#e056fd", .8)}</g>
-    <text x="18" y="34" font-size="15" font-weight="800" fill="#2d3436">Lollipop görevlisi = MUTLAKA dur</text></svg>`,
+    ${cap("🛑 Lollipop görevlisi = MUTLAKA dur", 12, 12, "#c0392b")}</svg>`,
 
   parked: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}${ROAD}
-    <g transform="translate(236,142)"><rect x="0" y="10" width="120" height="44" rx="9" fill="#f5f6fa" stroke="#dcdde1" stroke-width="2"/><rect x="86" y="18" width="30" height="18" rx="4" fill="#74b9ff"/><circle cx="26" cy="56" r="11" fill="#2f3640"/><circle cx="96" cy="56" r="11" fill="#2f3640"/><text x="14" y="40" font-size="13" font-weight="800" fill="#e17055">🍦 ICE CREAM</text></g>
+    <g transform="translate(236,142)"><rect x="0" y="10" width="120" height="44" rx="9" fill="#f5f6fa" stroke="#dcdde1" stroke-width="2"/><rect x="86" y="18" width="30" height="18" rx="4" fill="#74b9ff"/><circle cx="26" cy="56" r="11" fill="#2f3640"/><circle cx="96" cy="56" r="11" fill="#2f3640"/></g>
+    ${cap("🍦 ICE CREAM", 248, 108, "#e17055")}
     <circle class="an-ball" cx="300" cy="212" r="9" fill="#e74c3c"/>
     <g class="an-child" transform="translate(310,196)">${walker("an-walkanim", "#fd79a8", .8)}</g>
     <g transform="translate(20,158)">${toonCar("an-stopline", "#00b894")}</g>
-    <text x="18" y="34" font-size="15" font-weight="800" fill="#c0392b" class="an-blink">Dikkat! Çocuk çıkabilir!</text></svg>`,
+    ${cap("⚠️ Dikkat! Çocuk yola çıkabilir!", 12, 12, "#c0392b")}</svg>`,
 
   lights: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}${ROAD}
     <g transform="translate(196,52)">${trafficLightSVG("an-tl-cycle")}</g>
     <g transform="translate(40,158)">${toonCar("an-stopgo", "#a55eea")}</g>
-    <g class="an-fadein"><text x="252" y="80" font-size="13" font-weight="800" fill="#e74c3c">Kırmızı = DUR</text>
-    <text x="252" y="98" font-size="13" font-weight="800" fill="#e67e22">Sarı = hazırlan</text>
-    <text x="252" y="116" font-size="13" font-weight="800" fill="#27ae60">Yeşil = boşsa geç</text></g></svg>`,
+    <g class="an-fadein"><rect x="244" y="58" width="148" height="70" rx="12" fill="rgba(255,255,255,.94)"/>
+    <text x="256" y="80" font-size="13" font-weight="800" fill="#e74c3c">Kırmızı = DUR</text>
+    <text x="256" y="98" font-size="13" font-weight="800" fill="#e67e22">Sarı = hazırlan</text>
+    <text x="256" y="116" font-size="13" font-weight="800" fill="#27ae60">Yeşil = boşsa geç</text></g></svg>`,
 
   roundabout: () => `<svg viewBox="0 0 400 240"><rect width="400" height="240" fill="#8fd06c"/>
     <circle cx="200" cy="120" r="86" fill="#5b6270"/><circle cx="200" cy="120" r="40" fill="#7cbf5f" stroke="#fff" stroke-width="3"/>
     <rect x="0" y="102" width="120" height="36" fill="#5b6270"/><rect x="280" y="102" width="120" height="36" fill="#5b6270"/>
     <rect x="182" y="0" width="36" height="60" fill="#5b6270"/><rect x="182" y="180" width="36" height="60" fill="#5b6270"/>
-    <g class="an-orbit"><g transform="translate(200,120)"><g transform="translate(0,-63)">${(() => toonCar("", "#f7b731").replace('scale(', 'scale('))()}</g></g></g>
+    <g class="an-orbit"><g transform="translate(200,120)"><g transform="translate(-33,-82) scale(.55)">${toonCar("", "#f7b731")}</g></g></g>
     <g transform="translate(28,96) scale(.7)">${toonCar("an-nudge", "#eb3b5a")}</g>
     <path d="M118 96 q18 -18 40 -22" fill="none" stroke="#e74c3c" stroke-width="4" stroke-dasharray="7 5" class="an-pulse"/>
-    <text x="96" y="70" font-size="14" font-weight="800" fill="#c0392b" class="an-pulse">Sağdan gelene YOL VER →</text>
-    <text x="16" y="226" font-size="13" font-weight="700" fill="#2d3436">Roundabout: saat yönünde dönülür</text></svg>`,
+    ${cap("➡️ Sağdan gelene YOL VER!", 12, 8, "#c0392b")}
+    ${cap("🔄 Saat yönünde dönülür / Clockwise", 12, 204)}</svg>`,
 
   junction: () => `<svg viewBox="0 0 400 240"><rect width="400" height="240" fill="#8fd06c"/>
     <rect x="0" y="90" width="400" height="60" fill="#5b6270"/>
@@ -162,8 +173,8 @@ const SCENES = {
     <g stroke="#fff" stroke-width="3" stroke-dasharray="14 10"><line x1="0" y1="120" x2="168" y2="120"/><line x1="232" y1="120" x2="400" y2="120"/></g>
     <g stroke="#fff" stroke-width="4"><line x1="174" y1="152" x2="192" y2="152"/><line x1="196" y1="152" x2="214" y2="152"/><line x1="174" y1="158" x2="192" y2="158"/><line x1="196" y1="158" x2="214" y2="158"/></g>
     <g class="an-crosscar"><g transform="translate(-40,96) scale(.8)">${toonCar("", "#20bf6b")}</g></g>
-    <g transform="translate(176,168) rotate(-90 24 24)"><g transform="scale(.72)">${toonCar("an-nudge", "#4b7bec")}</g></g>
-    <text x="240" y="200" font-size="14" font-weight="800" fill="#2d3436" class="an-pulse">Boşluk bekle / Wait for a gap</text></svg>`,
+    <g transform="translate(178,206) rotate(-90 24 24)"><g transform="scale(.66)">${toonCar("an-nudge", "#4b7bec")}</g></g>
+    ${cap("⏳ Boşluk bekle / Wait for a gap", 132, 202)}</svg>`,
 
   train: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}
     <rect y="150" width="400" height="26" fill="#7f8c8d"/><g fill="#5d4037">${Array.from({ length: 10 }, (_, i) => `<rect x="${8 + i * 40}" y="152" width="18" height="22"/>`).join("")}</g>
@@ -173,7 +184,7 @@ const SCENES = {
     <g class="an-barrier"><rect x="60" y="182" width="130" height="9" rx="4" fill="#fff" stroke="#e74c3c" stroke-width="2.4" stroke-dasharray="16 12"/></g>
     <g><circle cx="40" cy="192" r="7" fill="#e74c3c" class="an-blink"/><circle cx="40" cy="210" r="7" fill="#e74c3c" class="an-blink2"/></g>
     <g transform="translate(210,190) scale(.85)">${toonCar("", "#f7b731")}</g>
-    <text x="220" y="120" font-size="14" font-weight="800" fill="#c0392b" class="an-blink">DUR ve BEKLE!</text></svg>`,
+    ${cap("🚂 DUR ve BEKLE! / STOP and WAIT!", 12, 12, "#c0392b")}</svg>`,
 
   cyclist: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}${ROAD}
     <g class="an-cyclist" transform="translate(250,176)">
@@ -189,20 +200,19 @@ const SCENES = {
   siren: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}${ROAD}
     <g class="an-ambulance"><g transform="translate(0,150)"><rect x="0" y="8" width="110" height="38" rx="8" fill="#fff" stroke="#dcdde1" stroke-width="2"/><rect x="76" y="14" width="26" height="16" rx="3" fill="#74b9ff"/><rect x="30" y="16" width="22" height="7" fill="#e74c3c"/><rect x="37.5" y="9" width="7" height="21" fill="#e74c3c"/><circle cx="24" cy="48" r="10" fill="#2f3640"/><circle cx="86" cy="48" r="10" fill="#2f3640"/><rect x="40" y="-2" width="18" height="8" rx="3" fill="#3498db" class="an-bluelight"/></g></g>
     <g transform="translate(250,164) scale(.9)"><g class="an-pullover">${toonCar("", "#f7b731")}</g></g>
-    <text x="150" y="46" font-size="26" class="an-pulse">🚨</text>
-    <text x="185" y="46" font-size="15" font-weight="800" fill="#2d3436">Nii-nuu! Yol aç / Make way!</text></svg>`,
+    ${cap("🚨 Nii-nuu! Yol aç / Make way!", 140, 26, "#2d3436")}</svg>`,
 
   motorway: () => `<svg viewBox="0 0 400 240">${SKY_DAY}
     <rect y="118" width="400" height="122" fill="#5b6270"/>
     <g stroke="#fff" stroke-width="4" stroke-dasharray="24 18"><line x1="0" y1="158" x2="400" y2="158"/><line x1="0" y1="198" x2="400" y2="198"/></g>
     <rect y="118" width="400" height="6" fill="#f39c12"/>
-    <g transform="translate(60,20)"><rect width="280" height="54" rx="8" fill="#2f3640"/><rect x="8" y="66" width="8" height="52" fill="#2f3640" transform="translate(0,-12)"/><rect x="264" y="54" width="8" height="64" fill="#2f3640"/>
+    <g transform="translate(60,20)"><rect width="280" height="54" rx="8" fill="#2f3640"/><rect x="8" y="54" width="8" height="64" fill="#2f3640"/><rect x="264" y="54" width="8" height="64" fill="#2f3640"/>
       <g transform="translate(36,8)"><rect width="56" height="38" rx="5" fill="#111"/><g class="an-redx" stroke="#e74c3c" stroke-width="6" stroke-linecap="round"><line x1="14" y1="8" x2="42" y2="30"/><line x1="42" y1="8" x2="14" y2="30"/></g></g>
       <g transform="translate(112,8)"><rect width="56" height="38" rx="5" fill="#111"/><circle cx="28" cy="19" r="16" fill="none" stroke="#e74c3c" stroke-width="4"/><text x="28" y="25" font-size="15" font-weight="800" fill="#fff" text-anchor="middle">50</text></g>
       <g transform="translate(188,8)"><rect width="56" height="38" rx="5" fill="#111"/><path d="M18 26 V14 l10 6 l10 -6 v12" stroke="#2ecc71" stroke-width="3.4" fill="none"/><path d="M28 8 l-5 8 h10 Z" fill="#2ecc71"/></g></g>
     <g class="an-mwcar1"><g transform="translate(0,124) scale(.8)">${toonCar("", "#45aaf2")}</g></g>
     <g class="an-mwcar2"><g transform="translate(0,164) scale(.8)">${toonCar("", "#26de81")}</g></g>
-    <text x="14" y="110" font-size="13.5" font-weight="800" fill="#c0392b">Kırmızı X = şerit KAPALI</text></svg>`,
+    ${cap("❌ Kırmızı X = şerit KAPALI", 12, 86, "#c0392b")}</svg>`,
 
   dash: () => `<svg viewBox="0 0 400 240"><rect width="400" height="240" fill="#2d3436"/>
     <path d="M40 220 A160 160 0 0 1 360 220" fill="none" stroke="#636e72" stroke-width="10"/>
@@ -211,27 +221,28 @@ const SCENES = {
     <g transform="translate(88,150)" class="an-blink"><rect width="52" height="40" rx="8" fill="#111"/><text x="26" y="27" font-size="20" text-anchor="middle">🛢️</text></g>
     <g transform="translate(174,150)" class="an-blink2"><rect width="52" height="40" rx="8" fill="#111"/><text x="26" y="27" font-size="20" text-anchor="middle">🌡️</text></g>
     <g transform="translate(260,150)" class="an-blink"><rect width="52" height="40" rx="8" fill="#111"/><text x="26" y="28" font-size="19" text-anchor="middle" fill="#e74c3c" font-weight="800">(!)</text></g>
-    <text x="200" y="226" font-size="14" font-weight="800" fill="#ffeaa7" text-anchor="middle" class="an-pulse">Uyarı ışığı = aracın seninle konuşuyor!</text></svg>`,
+    ${cap("💡 Uyarı ışığı = araç seninle konuşuyor!", 46, 202, "#fff", true)}</svg>`,
 
   hill: () => `<svg viewBox="0 0 400 240">${SKY_DAY}
     <path d="M0 240 L0 200 L400 90 L400 240 Z" fill="#8fd06c"/>
     <path d="M0 214 L400 104 L400 132 L0 242 Z" fill="#5b6270"/>
-    <g transform="translate(150,132) rotate(-15.4)">${toonCar("", "#eb3b5a", `<g class="an-pulse"><text x="34" y="-12" font-size="17" font-weight="800" fill="#c0392b">🤚 El freni!</text></g>`)}</g>
+    <g transform="translate(150,132) rotate(-15.4)">${toonCar("", "#eb3b5a")}</g>
+    ${cap("🤚 El freni kullan! / Use the handbrake", 12, 12, "#c0392b")}
     <path class="an-antiroll" d="M118 196 l-26 8" stroke="#c0392b" stroke-width="5" stroke-linecap="round"/>
     <path d="M92 204 l12 -1 l-7 -9 Z" fill="#c0392b" class="an-antiroll"/>
-    <text x="230" y="220" font-size="14" font-weight="800" fill="#2d3436">Yokuş kalkışı = handbrake</text></svg>`,
+    </svg>`,
 
   park: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}
     <rect y="168" width="400" height="58" fill="#5b6270"/>
     <rect y="160" width="400" height="10" fill="#95a5a6"/>
     <g stroke="#f1c40f" stroke-width="5"><line x1="0" y1="172" x2="400" y2="172"/><line x1="0" y1="181" x2="400" y2="181"/></g>
     <g transform="translate(140,158)">${toonCar("", "#45aaf2")}</g>
-    <g class="an-noPulse"><circle cx="200" cy="120" r="34" fill="none" stroke="#e74c3c" stroke-width="8"/><line x1="176" y1="96" x2="224" y2="144" stroke="#e74c3c" stroke-width="8"/><text x="200" y="76" font-size="15" font-weight="800" fill="#c0392b" text-anchor="middle">Çift sarı = PARK YOK</text></g></svg>`,
+    <g class="an-noPulse"><circle cx="200" cy="120" r="34" fill="none" stroke="#e74c3c" stroke-width="8"/><line x1="176" y1="96" x2="224" y2="144" stroke="#e74c3c" stroke-width="8"/></g>\n    ${cap("🚫 Çift sarı çizgi = PARK YASAK", 12, 12, "#c0392b")}</svg>`,
 
   phone: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}${ROAD}
     <g transform="translate(60,158)">${toonCar("an-weave", "#fd9644", `<g transform="translate(52,-16)"><rect x="-7" y="-12" width="14" height="24" rx="3.5" fill="#2f3640"/><rect x="-4.6" y="-9" width="9.2" height="15" fill="#74b9ff"/><g class="an-buzz"><path d="M10 -14 q6 4 0 9" stroke="#e17055" stroke-width="2.4" fill="none"/><path d="M15 -18 q9 7 0 16" stroke="#e17055" stroke-width="2.4" fill="none"/></g></g>`)}</g>
     <g class="an-noPulse"><circle cx="112" cy="120" r="30" fill="none" stroke="#e74c3c" stroke-width="7"/><line x1="91" y1="99" x2="133" y2="141" stroke="#e74c3c" stroke-width="7"/></g>
-    <text x="200" y="46" font-size="15" font-weight="800" fill="#c0392b">Elde telefon = YASAK (6 puan + ceza)</text>
+    ${cap("📵 Elde telefon = YASAK (6 puan)", 12, 12, "#c0392b")}
     <path class="an-weaveline" d="M60 232 q40 -8 80 0 q40 8 80 0 q40 -8 80 0" stroke="#e17055" stroke-width="3.4" stroke-dasharray="9 7" fill="none"/></svg>`,
 
   impaired: () => `<svg viewBox="0 0 400 240">${SKY_NIGHT}
@@ -240,8 +251,8 @@ const SCENES = {
     <g transform="translate(120,158)">${toonCar("an-weave", "#a55eea")}</g>
     <path class="an-weaveline" d="M40 230 q40 -10 80 0 q40 10 80 0 q40 -10 80 0 q40 10 80 0" stroke="#e74c3c" stroke-width="3.6" stroke-dasharray="10 8" fill="none"/>
     <g class="an-pop"><text x="48" y="70" font-size="30">🍺</text><text x="90" y="70" font-size="26">💊</text><text x="128" y="70" font-size="28">😴</text></g>
-    <g class="an-noPulse"><circle cx="95" cy="60" r="46" fill="none" stroke="#e74c3c" stroke-width="7"/><line x1="63" y1="28" x2="127" y2="92" stroke="#e74c3c" stroke-width="7"/></g>
-    <text x="200" y="46" font-size="15" font-weight="800" fill="#ffeaa7">Alkol • ilaç • yorgunluk = direksiyona geçme!</text></svg>`,
+    <g class="an-noPulse"><circle cx="100" cy="62" r="54" fill="none" stroke="#e74c3c" stroke-width="7"/><line x1="63" y1="25" x2="137" y2="99" stroke="#e74c3c" stroke-width="7"/></g>
+    ${cap("🚫 Alkollü / yorgun SÜRME!", 168, 16, "#fff", true)}</svg>`,
 
   belt: () => `<svg viewBox="0 0 400 240"><rect width="400" height="240" fill="#dfe6e9"/>
     <g transform="translate(200,130)">
@@ -262,13 +273,13 @@ const SCENES = {
       <rect x="0" y="0" width="48" height="86" rx="12" fill="#eb3b5a"/><rect x="7" y="12" width="34" height="20" rx="5" fill="#dff3fb"/><rect x="7" y="58" width="34" height="16" rx="5" fill="#f9d5d5"/>
       <rect x="-9" y="18" width="9" height="7" rx="2" fill="#eb3b5a"/><rect x="48" y="18" width="9" height="7" rx="2" fill="#eb3b5a"/></g>
     <g class="an-overtaker"><g transform="translate(222,250)"><rect x="0" y="0" width="48" height="86" rx="12" fill="#45aaf2"/><rect x="7" y="12" width="34" height="20" rx="5" fill="#dff3fb"/></g></g>
-    <g class="an-msmtext"><text x="20" y="50" font-size="17" font-weight="800" fill="#2d3436">1️⃣ Ayna</text><text x="20" y="78" font-size="17" font-weight="800" fill="#2d3436">2️⃣ Sinyal</text><text x="20" y="106" font-size="17" font-weight="800" fill="#2d3436">3️⃣ Manevra</text></g></svg>`,
+    <g class="an-msmtext"><rect x="10" y="26" width="136" height="94" rx="12" fill="rgba(255,255,255,.92)"/><text x="20" y="50" font-size="17" font-weight="800" fill="#2d3436">1️⃣ Ayna</text><text x="20" y="78" font-size="17" font-weight="800" fill="#2d3436">2️⃣ Sinyal</text><text x="20" y="106" font-size="17" font-weight="800" fill="#2d3436">3️⃣ Manevra</text></g></svg>`,
 
   works: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}${ROAD}
     <g transform="translate(250,148)">${Array.from({ length: 3 }, (_, i) => `<g transform="translate(${i * 46},${i * 8})"><path d="M0 46 L10 8 L20 46 Z" fill="#e17055"/><rect x="-3" y="42" width="26" height="7" rx="2.4" fill="#e17055"/><rect x="4" y="22" width="12" height="7" fill="#fff"/></g>`).join("")}</g>
-    <g transform="translate(320,120)" class="an-dig"><circle cx="0" cy="-24" r="8" fill="#f3c188"/><path d="M-9 -31 Q0 -40 9 -31 Z" fill="#f1c40f"/><path d="M0 -16 V6" stroke="#e67e22" stroke-width="7" stroke-linecap="round"/><path d="M0 6 L-8 26 M0 6 L8 26" stroke="#34495e" stroke-width="5" stroke-linecap="round"/><path d="M0 -10 L20 4 L30 -4" stroke="#e67e22" stroke-width="4.6" fill="none" stroke-linecap="round"/><ellipse cx="33" cy="-2" rx="6" ry="3.6" fill="#95a5a6" transform="rotate(40 33 -2)"/></g>
+    <g transform="translate(320,120)"><g class="an-dig"><circle cx="0" cy="-24" r="8" fill="#f3c188"/><path d="M-9 -31 Q0 -40 9 -31 Z" fill="#f1c40f"/><path d="M0 -16 V6" stroke="#e67e22" stroke-width="7" stroke-linecap="round"/><path d="M0 6 L-8 26 M0 6 L8 26" stroke="#34495e" stroke-width="5" stroke-linecap="round"/><path d="M0 -10 L20 4 L30 -4" stroke="#e67e22" stroke-width="4.6" fill="none" stroke-linecap="round"/><ellipse cx="33" cy="-2" rx="6" ry="3.6" fill="#95a5a6" transform="rotate(40 33 -2)"/></g></g>
     <g transform="translate(20,158)">${toonCar("an-drive-slow", "#4b7bec")}</g>
-    <text x="18" y="34" font-size="15" font-weight="800" fill="#d35400">🚧 Yol çalışması: yavaşla, işaretlere uy</text></svg>`,
+    ${cap("🚧 Yol çalışması: yavaşla!", 12, 12, "#d35400")}</svg>`,
 
   signshape: () => `<svg viewBox="0 0 400 240"><rect width="400" height="240" fill="#eef7ff"/>
     <g transform="translate(38,40)"><g class="an-signpop1">
@@ -294,7 +305,7 @@ const SCENES = {
       <path d="M0 -74 L58 -52 V6 Q58 58 0 80 Q-58 58 -58 6 V-52 Z" fill="#26de81" stroke="#20bf6b" stroke-width="5"/>
       <path d="M-26 4 L-6 26 L32 -22" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/></g></g>
     <g class="an-stars"><text x="70" y="60" font-size="24">✨</text><text x="300" y="80" font-size="22">⭐</text><text x="90" y="190" font-size="20">🌟</text><text x="310" y="190" font-size="24">✨</text></g>
-    <text x="200" y="226" font-size="16" font-weight="800" fill="#2d3436" text-anchor="middle">Kararsızsan → EN GÜVENLİ seçenek! 🛡️</text></svg>`,
+    ${cap("Kararsızsan → EN GÜVENLİ seçenek! 🛡️", 52, 202)}</svg>`,
 };
 
 function renderScene(name, container) {

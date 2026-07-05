@@ -16,7 +16,9 @@ Ticari değildir — kişisel çalışma için hazırlanmıştır. ❤️
 - 📊 Quiz ekranında **konu bazlı başarı yüzdesi** — hangi konuya çalışman gerektiğini gösterir.
 - 🗓️ **Sınav Günü Rehberi** — Sınav formatı, hazard perception bölümü ve taktikler; Türkçe + İngilizce, sesli dinlenebilir.
 - 🇹🇷/🇬🇧 Arayüz dili tek tuşla değişir; soruları **İngilizce**, **Türkçe** veya **ikisi birden** görebilirsin (gerçek sınav İngilizce olduğu için "ikisi" önerilir).
-- 📈 İlerleme telefonda saklanır (localStorage) — hesap gerekmez.
+- 👤 **Profiller** — İlk açılışta isim + avatar seçilir; herkesin ilerlemesi ayrı tutulur, skorlar karışmaz. Sağ üstteki avatar ile profil değiştirilir. Ayrıca her telefon/tablet/bilgisayar zaten kendi verisini tutar.
+- 🔊 **Akıllı ses seçimi** — Cihazdaki en kaliteli Türkçe/İngilizce ses otomatik seçilir (Google/Siri/Natural öncelikli). Türkçe ses yüklü değilse uygulama nazikçe uyarır; Ayarlar → Erişilebilirlik → Seslendirme'den indirilebilir.
+- 📈 İlerleme cihazda saklanır (localStorage) — sunucu/hesap gerekmez.
 - 📱 **PWA**: iPhone, Android ve bilgisayarda çalışır; internet olmadan da açılır.
 
 ## Nasıl kullanılır?

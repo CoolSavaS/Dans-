@@ -16,11 +16,36 @@ const state = {
 const t = (key) => (UI[key] ? UI[key][state.lang] : key);
 const byId = Object.fromEntries(QUESTIONS.map((q) => [q.id, q]));
 
-/* ---------- ilerleme ---------- */
-function loadProg() {
-  try { return JSON.parse(localStorage.getItem("ek-prog")) || {}; } catch { return {}; }
+/* ---------- profiller: her kullanıcının ilerlemesi ayrı ---------- */
+const AVATARS = ["🚗", "🚙", "🏎️", "🛵", "🚌", "🦊", "🐱", "🦁", "🐼", "⭐", "🌙", "⚡"];
+function getProfiles() {
+  try { return JSON.parse(localStorage.getItem("ek-profiles")) || []; } catch { return []; }
 }
-function saveProg(p) { localStorage.setItem("ek-prog", JSON.stringify(p)); }
+function saveProfiles(ps) { localStorage.setItem("ek-profiles", JSON.stringify(ps)); }
+function activeProfile() {
+  const ps = getProfiles();
+  return ps.find((p) => p.id === localStorage.getItem("ek-active")) || ps[0] || null;
+}
+function setActiveProfile(id) { localStorage.setItem("ek-active", id); }
+function progKey() { const a = activeProfile(); return "ek-prog-" + (a ? a.id : "default"); }
+/* Eski tek-kullanıcılı veriyi ilk profile taşı */
+(function migrateLegacy() {
+  if (getProfiles().length) return;
+  const legacy = localStorage.getItem("ek-prog");
+  if (legacy) {
+    const id = "p" + Date.now();
+    saveProfiles([{ id, name: "Ben", avatar: "🚗" }]);
+    setActiveProfile(id);
+    localStorage.setItem("ek-prog-" + id, legacy);
+    localStorage.removeItem("ek-prog");
+  }
+})();
+
+/* ---------- ilerleme (aktif profile bağlı) ---------- */
+function loadProg() {
+  try { return JSON.parse(localStorage.getItem(progKey())) || {}; } catch { return {}; }
+}
+function saveProg(p) { localStorage.setItem(progKey(), JSON.stringify(p)); }
 function record(qid, ok) {
   const p = loadProg(); p.seen = p.seen || {};
   const s = p.seen[qid] || { c: 0, w: 0 };
@@ -37,17 +62,69 @@ function stopSpeech() {
   if (state.pendingUtter) { state.pendingUtter.onend = null; state.pendingUtter = null; }
   if (state.speech) state.speech.cancel();
 }
+
+/* --- Ses kalitesi: cihazdaki EN İYİ sesi seç ---
+   Google/Siri/Natural/Neural sesler öne alınır, robotik eSpeak dışlanır. */
+let VOICES = [];
+function refreshVoices() { if (state.speech) VOICES = state.speech.getVoices() || []; }
+if (state.speech && "onvoiceschanged" in state.speech) state.speech.onvoiceschanged = refreshVoices;
+refreshVoices();
+
+function pickVoice(lang) {
+  if (!VOICES.length) refreshVoices();
+  const pref = lang === "en" ? "en-gb" : "tr";
+  const base = lang === "en" ? "en" : "tr";
+  const cands = VOICES.filter((v) => (v.lang || "").replace("_", "-").toLowerCase().startsWith(base));
+  if (!cands.length) return null;
+  const score = (v) => {
+    let s = 0;
+    const n = (v.name || "").toLowerCase();
+    const l = (v.lang || "").replace("_", "-").toLowerCase();
+    if (l.startsWith(pref)) s += 4;
+    for (const k of ["natural", "neural", "premium", "enhanced", "siri", "google", "yelda", "filiz", "daniel", "serena", "kate", "sonia", "libby"]) {
+      if (n.includes(k)) { s += 5; break; }
+    }
+    if (v.default) s += 1;
+    if (n.includes("espeak") || n.includes("eloquence")) s -= 8;
+    return s;
+  };
+  return cands.slice().sort((a, b) => score(b) - score(a))[0];
+}
+
+function makeUtter(text, lang) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang === "en" ? "en-GB" : "tr-TR";
+  u.rate = lang === "en" ? 0.92 : 0.97;
+  u.pitch = 1.02;
+  const v = pickVoice(lang);
+  if (v) u.voice = v;
+  return u;
+}
+
+/* Türkçe ses yüklü değilse bir kez uyar (İngiliz sesiyle Türkçe okumak berbat çıkar) */
+function trVoiceOk() {
+  if (pickVoice("tr")) return true;
+  if (!localStorage.getItem("ek-trvoice-warned")) {
+    localStorage.setItem("ek-trvoice-warned", "1");
+    toast(t("trVoiceMissing"), 6000);
+  }
+  return false;
+}
+
 function speak(text, lang) {
   if (!state.speech) return;
   stopSpeech();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = lang === "en" ? "en-GB" : "tr-TR";
-  u.rate = 0.95;
-  const voices = state.speech.getVoices();
-  const v = voices.find((v) => v.lang.startsWith(lang === "en" ? "en-GB" : "tr")) ||
-            voices.find((v) => v.lang.startsWith(lang === "en" ? "en" : "tr"));
-  if (v) u.voice = v;
-  state.speech.speak(u);
+  if (lang === "tr" && !trVoiceOk()) return;
+  state.speech.speak(makeUtter(text, lang));
+}
+
+/* Kısa bildirim balonu */
+function toast(msg, ms = 3000) {
+  const d = document.createElement("div");
+  d.className = "toast";
+  d.textContent = msg;
+  document.body.appendChild(d);
+  setTimeout(() => { d.classList.add("gone"); setTimeout(() => d.remove(), 400); }, ms);
 }
 
 /* Şık üretimi: özel yanlışlar varsa onlar, yoksa tipe uygun havuzdan */
@@ -104,10 +181,12 @@ function qText(obj) {
 }
 
 function header(showBack, title) {
+  const a = activeProfile();
   return `<header class="top">
     ${showBack ? `<button class="icon-btn" onclick="goHome()">←</button>` : `<span class="logo">🚗</span>`}
     <div class="top-title">${title || t("appName")}</div>
     <div class="top-actions">
+      ${a ? `<button class="icon-btn avatar-btn" onclick="setView(profilesView)" title="${esc(a.name)}">${a.avatar}</button>` : ""}
       <button class="icon-btn lang-btn" onclick="toggleLang()">${state.lang === "tr" ? "🇬🇧 EN" : "🇹🇷 TR"}</button>
     </div></header>`;
 }
@@ -232,12 +311,9 @@ function openExplain(q, isWrong, cb) {
   setTimeout(() => {
     if (!state.speech) return;
     stopSpeech();
-    // önce İngilizce (sınav dili), sonra Türkçesi + mantığı
-    const uEn = new SpeechSynthesisUtterance("The correct answer is: " + q.a.en);
-    uEn.lang = "en-GB"; uEn.rate = 0.95;
-    const uTr = new SpeechSynthesisUtterance("Türkçesi: " + q.a.tr + ". " + q.logic.tr);
-    uTr.lang = "tr-TR"; uTr.rate = 0.98;
-    state.speech.speak(uEn); state.speech.speak(uTr);
+    // önce İngilizce (sınav dili), sonra Türkçesi + mantığı — en iyi seslerle
+    state.speech.speak(makeUtter("The correct answer is: " + q.a.en, "en"));
+    if (trVoiceOk()) state.speech.speak(makeUtter("Türkçesi: " + q.a.tr + ". " + q.logic.tr, "tr"));
   }, 350);
 }
 function closeModal() {
@@ -332,12 +408,13 @@ function narrateStep(onDone) {
     enText = q.q.en + " The answer is: " + q.a.en + ".";
     trText = "Türkçesi: " + q.q.tr + " Cevap: " + q.a.tr + ". " + q.logic.tr;
   }
-  const uEn = new SpeechSynthesisUtterance(enText);
-  uEn.lang = "en-GB"; uEn.rate = 0.95;
-  const uTr = new SpeechSynthesisUtterance(trText);
-  uTr.lang = "tr-TR"; uTr.rate = 1;
-  if (onDone) { uTr.onend = onDone; state.pendingUtter = uTr; }
-  state.speech.speak(uEn); state.speech.speak(uTr);
+  const uEn = makeUtter(enText, "en");
+  const hasTr = trVoiceOk();
+  const uTr = hasTr ? makeUtter(trText, "tr") : null;
+  const last = uTr || uEn;
+  if (onDone) { last.onend = onDone; state.pendingUtter = last; }
+  state.speech.speak(uEn);
+  if (uTr) state.speech.speak(uTr);
 }
 
 function toggleAuto() {
@@ -702,10 +779,80 @@ function renderGlossaryList(filter) {
     : `<p class="gl-empty">${t("noResult")}</p>`;
 }
 
+/* =====================================================================
+   PROFİLLER — her kullanıcı ayrı hesap, ilerlemeler karışmaz
+   ===================================================================== */
+let setupAvatar = AVATARS[0];
+function profileSetup() {
+  app().innerHTML = `<div class="setup">
+    <div class="hero"><span class="hero-emoji">🚗💨</span>
+      <h1>${t("appName")}</h1><p class="tagline">${t("tagline")}</p></div>
+    <div class="setup-card">
+      <h2>${t("whoTitle")}</h2>
+      <p class="page-sub">${t("whoSub")}</p>
+      <div class="avatar-grid">
+        ${AVATARS.map((a) => `<button class="avatar-pick ${a === setupAvatar ? "on" : ""}" onclick="setupAvatar='${a}';profileSetup()">${a}</button>`).join("")}
+      </div>
+      <input id="pname" class="gl-search" maxlength="20" placeholder="${t("namePh")}" value="">
+      <button class="big-btn" onclick="createProfile()">${t("createProfile")} ✨</button>
+    </div>
+    <footer class="foot">${t("nonCommercial")}</footer></div>`;
+}
+
+function createProfile(fromList) {
+  const el = $("#pname");
+  const name = (el && el.value.trim()) || (fromList ? "" : "");
+  if (!name) { if (el) { el.focus(); el.classList.add("err"); } return; }
+  const ps = getProfiles();
+  const id = "p" + Date.now();
+  ps.push({ id, name, avatar: setupAvatar });
+  saveProfiles(ps);
+  setActiveProfile(id);
+  goHome();
+}
+
+function profilesView() {
+  const ps = getProfiles();
+  const act = activeProfile();
+  app().innerHTML = `${header(true, t("profiles"))}
+  <p class="page-sub">${t("whoSub")}</p>
+  <div class="profile-list">
+    ${ps.map((p) => {
+      let seen = 0;
+      try { const d = JSON.parse(localStorage.getItem("ek-prog-" + p.id)) || {}; seen = d.seen ? Object.keys(d.seen).length : 0; } catch {}
+      return `<div class="profile-item ${act && act.id === p.id ? "on" : ""}">
+        <button class="pi-main" onclick="setActiveProfile('${p.id}');goHome()">
+          <span class="pi-avatar">${p.avatar}</span>
+          <span class="pi-body"><b>${esc(p.name)}</b><small>${seen} ${t("statSeen")}${act && act.id === p.id ? " • ✅ " + t("activeLabel") : ""}</small></span>
+        </button>
+        ${ps.length > 1 ? `<button class="pi-del" onclick="deleteProfile('${p.id}')">✕</button>` : ""}
+      </div>`;
+    }).join("")}
+  </div>
+  <div class="setup-card">
+    <h3>${t("addProfile")}</h3>
+    <div class="avatar-grid">
+      ${AVATARS.map((a) => `<button class="avatar-pick ${a === setupAvatar ? "on" : ""}" onclick="setupAvatar='${a}';profilesView()">${a}</button>`).join("")}
+    </div>
+    <input id="pname" class="gl-search" maxlength="20" placeholder="${t("namePh")}">
+    <button class="big-btn" onclick="createProfile(true)">${t("createProfile")} ✨</button>
+  </div>`;
+}
+
+function deleteProfile(id) {
+  if (!confirm(t("confirmDelete"))) return;
+  let ps = getProfiles().filter((p) => p.id !== id);
+  saveProfiles(ps);
+  localStorage.removeItem("ek-prog-" + id);
+  if (localStorage.getItem("ek-active") === id && ps.length) setActiveProfile(ps[0].id);
+  profilesView();
+}
+
 /* ---------- başlat ---------- */
 if (state.speech) state.speech.getVoices(); // ses listesini ısıt
+function boot() { setView(getProfiles().length ? home : profileSetup); }
 if (document.readyState === "loading") {
-  window.addEventListener("DOMContentLoaded", () => setView(home));
+  window.addEventListener("DOMContentLoaded", boot);
 } else {
-  setView(home);
+  boot();
 }
