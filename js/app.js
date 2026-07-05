@@ -975,7 +975,43 @@ function deleteProfile(id) {
 
 /* ---------- başlat ---------- */
 if (state.speech) state.speech.getVoices(); // ses listesini ısıt
-function boot() { setView(getProfiles().length ? home : profileSetup); }
+
+/* =====================================================================
+   GİRİŞ KODU — uygulama herkese açık adreste olsa bile kodu bilmeyen
+   giremez. (Not: içerik koruması içindir; kod cihazda bir kez sorulur.)
+   ===================================================================== */
+const APP_PIN = "1907";
+function isUnlocked() { return localStorage.getItem("ek-unlocked") === APP_PIN; }
+function lockView() {
+  app().innerHTML = `<div class="setup">
+    <div class="hero"><span class="hero-emoji">🚗🔒</span>
+      <h1>${t("appName")}</h1><p class="tagline">${t("tagline")}</p></div>
+    <div class="setup-card">
+      <h2>${t("lockTitle")}</h2>
+      <p class="page-sub">${t("lockSub")}</p>
+      <input id="pin" class="gl-search" type="password" inputmode="numeric" autocomplete="off" placeholder="${t("lockPh")}"
+        onkeydown="if(event.key==='Enter')tryUnlock()">
+      <button class="big-btn" onclick="tryUnlock()">${t("lockBtn")}</button>
+    </div>
+    <footer class="foot">${t("nonCommercial")}</footer></div>`;
+  setTimeout(() => { const el = $("#pin"); if (el) el.focus(); }, 150);
+}
+function tryUnlock() {
+  const el = $("#pin");
+  if (el && el.value.trim() === APP_PIN) {
+    localStorage.setItem("ek-unlocked", APP_PIN);
+    boot();
+  } else if (el) {
+    el.value = ""; el.classList.add("err");
+    toast(t("lockWrong"));
+    setTimeout(() => el.classList.remove("err"), 600);
+  }
+}
+
+function boot() {
+  if (!isUnlocked()) { setView(lockView); return; }
+  setView(getProfiles().length ? home : profileSetup);
+}
 if (document.readyState === "loading") {
   window.addEventListener("DOMContentLoaded", boot);
 } else {
