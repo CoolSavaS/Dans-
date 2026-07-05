@@ -880,8 +880,18 @@ function voiceView() {
     return `<option value="auto" ${cur === "auto" ? "selected" : ""}>${t("voiceAuto")}</option>` +
       list.map((v) => `<option value="${esc(v.voiceURI)}" ${cur === v.voiceURI ? "selected" : ""}>${esc(v.name)} (${esc(v.lang)})</option>`).join("");
   };
+  // düşük kaliteli (compact) ses mi kullanılıyor?
+  const activeTr = chosenVoice("tr") || pickVoice("tr");
+  const activeEn = chosenVoice("en") || pickVoice("en");
+  const isCompact = (v) => v && ((v.voiceURI || "") + (v.name || "")).toLowerCase().includes("compact");
+  const compactWarn = (isCompact(activeTr) || isCompact(activeEn))
+    ? `<div class="setup-card inst-note">${t("compactWarn")}</div>` : "";
   app().innerHTML = `${header(true, t("voiceSettings"))}
   <p class="page-sub">${t("voiceIntro")}</p>
+  <div class="setup-card inst-note"><b>${t("voiceFixTitle")}</b>
+    <p class="inst-p">🍎 ${t("voiceFixIOS")}</p>
+    <p class="inst-p">🤖 ${t("voiceFixAnd")}</p></div>
+  ${compactWarn}
   ${VOICES.length ? "" : `<div class="setup-card"><b>${t("noVoices")}</b></div>`}
   <div class="setup-card">
     <h3>🇬🇧 ${t("voiceEN")}</h3>
