@@ -91,19 +91,40 @@ function pickVoice(lang) {
   return cands.slice().sort((a, b) => score(b) - score(a))[0];
 }
 
+/* Seslendirme metnini temizle: emojiler okunmasın, birimler doğru söylensin */
+function ttsClean(text, lang) {
+  let s = text.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{FE0F}]/gu, "").replace(/\s+/g, " ").trim();
+  s = s.replace(/(\d+(?:[.,]\d+)?)\s*mm\b/g, lang === "tr" ? "$1 milimetre" : "$1 millimetres");
+  s = s.replace(/(\d+(?:[.,]\d+)?)\s*m\b/g, lang === "tr" ? "$1 metre" : "$1 metres");
+  if (lang === "tr") {
+    s = s.replace(/(\d+)\s*mph\b/g, "saatte $1 mil");
+    s = s.replace(/(\d)\.(\d)/g, "$1,$2");
+    s = s.replace(/\bDVSA\b/g, "Di-Vi-Es-Ey").replace(/\bMOT\b/g, "Em-O-Ti").replace(/\bCPR\b/g, "kalp masajı");
+  }
+  return s;
+}
+
+/* Kullanıcının elle seçtiği ses (Ses Ayarları) otomatik seçimin önüne geçer */
+function chosenVoice(lang) {
+  const uri = localStorage.getItem("ek-voice-" + lang);
+  if (!uri || uri === "auto") return null;
+  return VOICES.find((v) => v.voiceURI === uri) || null;
+}
+function speedFactor() { return parseFloat(localStorage.getItem("ek-rate") || "1"); }
+
 function makeUtter(text, lang) {
-  const u = new SpeechSynthesisUtterance(text);
+  const u = new SpeechSynthesisUtterance(ttsClean(text, lang));
   u.lang = lang === "en" ? "en-GB" : "tr-TR";
-  u.rate = lang === "en" ? 0.92 : 0.97;
+  u.rate = (lang === "en" ? 0.92 : 0.97) * speedFactor();
   u.pitch = 1.02;
-  const v = pickVoice(lang);
+  const v = chosenVoice(lang) || pickVoice(lang);
   if (v) u.voice = v;
   return u;
 }
 
 /* Türkçe ses yüklü değilse bir kez uyar (İngiliz sesiyle Türkçe okumak berbat çıkar) */
 function trVoiceOk() {
-  if (pickVoice("tr")) return true;
+  if (chosenVoice("tr") || pickVoice("tr")) return true;
   if (!localStorage.getItem("ek-trvoice-warned")) {
     localStorage.setItem("ek-trvoice-warned", "1");
     toast(t("trVoiceMissing"), 6000);
@@ -246,6 +267,9 @@ function home() {
     <button class="chip" onclick="backupCopy()">${t("copyBackup")}</button>
     <button class="chip" onclick="backupLoad()">${t("pasteBackup")}</button>
     <button class="chip danger" onclick="progReset()">${t("resetProg")}</button>
+  </div>
+  <div class="backup-row">
+    <button class="chip" onclick="setView(voiceView)">${t("voiceSettings")}</button>
   </div>
   <footer class="foot">${t("installHint")}<br>${t("nonCommercial")}</footer>`;
 }
@@ -778,6 +802,43 @@ function renderGlossaryList(filter) {
         </div>`).join("")}</div>`
     : `<p class="gl-empty">${t("noResult")}</p>`;
 }
+
+/* =====================================================================
+   SES AYARLARI — cihazdaki sesler arasından seçim + hız + deneme
+   ===================================================================== */
+function voiceView() {
+  refreshVoices();
+  const rate = String(speedFactor());
+  const opts = (lang) => {
+    const cur = localStorage.getItem("ek-voice-" + lang) || "auto";
+    const base = lang === "en" ? "en" : "tr";
+    const list = VOICES.filter((v) => (v.lang || "").replace("_", "-").toLowerCase().startsWith(base));
+    return `<option value="auto" ${cur === "auto" ? "selected" : ""}>${t("voiceAuto")}</option>` +
+      list.map((v) => `<option value="${esc(v.voiceURI)}" ${cur === v.voiceURI ? "selected" : ""}>${esc(v.name)} (${esc(v.lang)})</option>`).join("");
+  };
+  app().innerHTML = `${header(true, t("voiceSettings"))}
+  <p class="page-sub">${t("voiceIntro")}</p>
+  ${VOICES.length ? "" : `<div class="setup-card"><b>${t("noVoices")}</b></div>`}
+  <div class="setup-card">
+    <h3>🇬🇧 ${t("voiceEN")}</h3>
+    <select id="ven" class="gl-search" onchange="setVoice('en', this.value)">${opts("en")}</select>
+    <button class="mini-btn" onclick="speak('Give way to traffic on the major road. The stopping distance at 30 miles per hour is 23 metres.','en')">${t("voiceTest")} 🇬🇧</button>
+  </div>
+  <div class="setup-card">
+    <h3>🇹🇷 ${t("voiceTR")}</h3>
+    <select id="vtr" class="gl-search" onchange="setVoice('tr', this.value)">${opts("tr")}</select>
+    <button class="mini-btn" onclick="speak('Ana yoldaki trafiğe yol ver. Islak yolda durma mesafesi iki katına çıkar.','tr')">${t("voiceTest")} 🇹🇷</button>
+  </div>
+  <div class="setup-card">
+    <h3>⏩ ${t("voiceSpeed")}</h3>
+    <div class="qlang-row" style="margin:8px 0 0">
+      ${[["0.82", t("vsSlow")], ["1", t("vsNormal")], ["1.15", t("vsFast")]].map(([v, l]) =>
+        `<button class="chip ${rate === v ? "on" : ""}" onclick="localStorage.setItem('ek-rate','${v}');voiceView()">${l}</button>`).join("")}
+    </div>
+  </div>
+  <button class="big-btn ghost" onclick="goHome()">${t("backHome")}</button>`;
+}
+function setVoice(lang, uri) { localStorage.setItem("ek-voice-" + lang, uri); }
 
 /* =====================================================================
    PROFİLLER — her kullanıcı ayrı hesap, ilerlemeler karışmaz

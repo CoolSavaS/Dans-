@@ -246,6 +246,17 @@ const UI = {
   activeLabel:  { tr: "aktif", en: "active" },
   confirmDelete: { tr: "Bu profil ve tüm ilerlemesi silinsin mi?", en: "Delete this profile and all its progress?" },
   trVoiceMissing: { tr: "📢 Telefonda Türkçe ses yüklü değil. Ayarlar → Erişilebilirlik → Seslendirme'den Türkçe ses indirirsen sesli anlatım Türkçe de çalışır.", en: "📢 No Turkish voice installed. Add one in Settings → Accessibility → Spoken Content for Turkish narration." },
+  voiceSettings: { tr: "🔊 Ses Ayarları", en: "🔊 Voice Settings" },
+  voiceIntro:   { tr: "Beğenmediğin sesi burada değiştir. En iyi sesler için: Android'de 'Google Speech Services', iPhone'da Ayarlar → Erişilebilirlik → Sesli İçerik → Sesler'den Türkçe ve İngilizce (UK) ses indir.", en: "Change the voice here if you don't like it. For best voices install Google Speech Services (Android) or add voices in Settings → Accessibility → Spoken Content (iPhone)." },
+  voiceEN:      { tr: "İngilizce ses", en: "English voice" },
+  voiceTR:      { tr: "Türkçe ses", en: "Turkish voice" },
+  voiceAuto:    { tr: "⭐ Otomatik (önerilen)", en: "⭐ Automatic (recommended)" },
+  voiceTest:    { tr: "▶ Dene", en: "▶ Test" },
+  voiceSpeed:   { tr: "Konuşma hızı", en: "Speech rate" },
+  vsSlow:       { tr: "🐢 Yavaş", en: "🐢 Slow" },
+  vsNormal:     { tr: "Normal", en: "Normal" },
+  vsFast:       { tr: "🐇 Hızlı", en: "🐇 Fast" },
+  noVoices:     { tr: "Bu cihazda hiç ses bulunamadı — sesli anlatım kapalı çalışır.", en: "No voices found on this device — narration will be silent." },
 };
 
 /* ---------- SINAV SÖZLÜĞÜ — İngilizce terim → Türkçe karşılık ---------- */
