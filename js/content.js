@@ -257,6 +257,15 @@ const UI = {
   vsNormal:     { tr: "Normal", en: "Normal" },
   vsFast:       { tr: "🐇 Hızlı", en: "🐇 Fast" },
   noVoices:     { tr: "Bu cihazda hiç ses bulunamadı — sesli anlatım kapalı çalışır.", en: "No voices found on this device — narration will be silent." },
+  installTitle: { tr: "Cihaza Kur", en: "Install App" },
+  installSub:   { tr: "Telefon • tablet • bilgisayar — uygulama olarak", en: "Phone • tablet • PC — as a real app" },
+  installNow:   { tr: "📥 Şimdi kur", en: "📥 Install now" },
+  installed:    { tr: "Uygulama kuruldu!", en: "App installed!" },
+  installIntro: { tr: "Bu uygulama PWA teknolojisiyle yapıldı: mağaza gerekmeden telefona, tablete ve bilgisayara gerçek uygulama gibi kurulur, kendi simgesiyle açılır, internetsiz çalışır.", en: "This app is a PWA: it installs like a real app on phones, tablets and PCs — no app store needed, its own icon, works offline." },
+  instAndroid:  { tr: "Chrome menüsü (⋮) → “Uygulamayı yükle” veya “Ana ekrana ekle”. Simge ana ekrana gelir, tam ekran açılır.", en: "Chrome menu (⋮) → “Install app” or “Add to Home screen”." },
+  instIOS:      { tr: "Safari'de Paylaş düğmesi (kare+ok) → aşağı kaydır → “Ana Ekrana Ekle” → Ekle. Simge ana ekrana gelir.", en: "In Safari: Share button → “Add to Home Screen” → Add." },
+  instPC:       { tr: "Chrome/Edge adres çubuğunun sağındaki kurulum simgesine (⊕/💻) tıkla → “Yükle”. Masaüstü simgesi oluşur.", en: "Click the install icon at the right of the address bar in Chrome/Edge → “Install”." },
+  instNote:     { tr: "Not: Kurulum seçeneğinin çıkması için uygulamayı kalıcı web adresinden açmalısın (GitHub Pages — kurulumu README'de 3 adımda anlatılıyor). Kalıcı adres bir kez ayarlandıktan sonra herkes oradan kurabilir.", en: "Note: to get the install option, open the app from its permanent web address (GitHub Pages — 3 steps in the README). Once set up, everyone can install from there." },
 };
 
 /* ---------- SINAV SÖZLÜĞÜ — İngilizce terim → Türkçe karşılık ---------- */

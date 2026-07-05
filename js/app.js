@@ -80,7 +80,8 @@ function pickVoice(lang) {
     let s = 0;
     const n = (v.name || "").toLowerCase();
     const l = (v.lang || "").replace("_", "-").toLowerCase();
-    if (l.startsWith(pref)) s += 4;
+    if (l.startsWith(pref)) s += 8;                        // İngiliz aksanı (en-GB) şart
+    else if (lang === "en" && l.startsWith("en-us")) s -= 2; // Amerikan aksanını geri it
     for (const k of ["natural", "neural", "premium", "enhanced", "siri", "google", "yelda", "filiz", "daniel", "serena", "kate", "sonia", "libby"]) {
       if (n.includes(k)) { s += 5; break; }
     }
@@ -132,11 +133,20 @@ function trVoiceOk() {
   return false;
 }
 
+/* Cümle cümle kuyrukla — tek nefeste okuyan robotik akış yerine doğal duraklar */
+function ttsSplit(text) { return text.split(/(?<=[.!?…])\s+/).map((s) => s.trim()).filter(Boolean); }
+function queueText(text, lang) {
+  const parts = ttsSplit(ttsClean(text, lang));
+  const utters = parts.map((s) => makeUtter(s, lang));
+  utters.forEach((u) => state.speech.speak(u));
+  return utters;
+}
+
 function speak(text, lang) {
   if (!state.speech) return;
   stopSpeech();
   if (lang === "tr" && !trVoiceOk()) return;
-  state.speech.speak(makeUtter(text, lang));
+  queueText(text, lang);
 }
 
 /* Kısa bildirim balonu */
@@ -253,6 +263,8 @@ function home() {
       <span class="mc-icon">🚸</span><span class="mc-title">${t("signs")}</span><span class="mc-sub">${t("signsSub")}</span></button>
     <button class="menu-card mc-mistakes" onclick="startQuiz('mistakes')">
       <span class="mc-icon">🔁</span><span class="mc-title">${t("mistakes")}</span><span class="mc-sub">${t("mistakesSub")}</span></button>
+    <button class="menu-card mc-install wide" onclick="installApp()">
+      <span class="mc-icon">📥</span><span class="mc-title">${t("installTitle")}</span><span class="mc-sub">${t("installSub")}</span></button>
     <button class="menu-card mc-guide" onclick="setView(guideView)">
       <span class="mc-icon">🗓️</span><span class="mc-title">${t("guide")}</span><span class="mc-sub">${t("guideSub")}</span></button>
     <button class="menu-card mc-glossary" onclick="setView(glossaryView)">
@@ -305,11 +317,17 @@ function progReset() {
 /* =====================================================================
    AÇIKLAMA MODALI — yanlış cevapta animasyon + çift dilli anlatım
    ===================================================================== */
+/* Yanlış cevapta sonuç (kaza / son anda fren) hikâyesi oynasın */
+const STORY = { distance: "crash", mirrors: "crash", junction: "crash", parked: "nearmiss", zebra: "nearmiss", patrol: "nearmiss" };
+
 function explainHTML(q, isWrong) {
   return `<div class="modal-backdrop" id="modal">
     <div class="modal">
       <div class="modal-head ${isWrong ? "bad" : "good"}">${isWrong ? t("wrong") : t("theAnswer")}</div>
       <div class="scene" id="modalScene"></div>
+      ${isWrong ? `<div class="teach">${instructorSVG()}
+        <div class="teach-bubble"><b>${state.lang === "tr" ? "Hayır, öyle değil! Doğrusu:" : "No, not like that! The answer is:"}</b> “${esc(state.lang === "tr" ? q.a.tr : q.a.en)}”
+        <span class="tb-why">${state.lang === "tr" ? "Çünkü" : "Because"}: ${esc(state.lang === "tr" ? q.logic.tr : q.logic.en)}</span></div></div>` : ""}
       <div class="explain">
         <div class="ex-row ex-en"><span class="ex-label">🇬🇧 ${t("inEnglish")}:</span><b>“${esc(q.a.en)}”</b>
           <button class="mini-btn" onclick="speak(${JSON.stringify(q.q.en + ". The answer is: " + q.a.en + ". " + q.logic.en).replace(/"/g, "&quot;")},'en')">🔊</button></div>
@@ -329,15 +347,15 @@ function openExplain(q, isWrong, cb) {
     const s = SIGNS.find((x) => x.id === q.signId);
     $("#modalScene").innerHTML = `<div class="sign-hero"><div class="sign-hero-svg an-pop-css">${s ? s.svg : ""}</div></div>`;
   } else {
-    renderScene(q.scene, $("#modalScene"));
+    // yanlışsa önce "sonuç" hikâyesi (kaza / son anda fren), yoksa konu sahnesi
+    renderScene((isWrong && STORY[q.scene]) || q.scene, $("#modalScene"));
   }
-  // otomatik sesli anlatım: önce EN sonra TR
+  // eğitmen konuşur: önce İngilizce (sınav dili), sonra Türkçesi + nedeni
   setTimeout(() => {
     if (!state.speech) return;
     stopSpeech();
-    // önce İngilizce (sınav dili), sonra Türkçesi + mantığı — en iyi seslerle
-    state.speech.speak(makeUtter("The correct answer is: " + q.a.en, "en"));
-    if (trVoiceOk()) state.speech.speak(makeUtter("Türkçesi: " + q.a.tr + ". " + q.logic.tr, "tr"));
+    queueText((isWrong ? "No, not like that! The correct answer is: " : "The correct answer is: ") + q.a.en + ".", "en");
+    if (trVoiceOk()) queueText((isWrong ? "Hayır, öyle değil! Doğrusu: " : "Doğrusu: ") + q.a.tr + ". Çünkü " + q.logic.tr, "tr");
   }, 350);
 }
 function closeModal() {
@@ -379,19 +397,23 @@ function renderLessonStep() {
   app().innerHTML = `${header(true, l.title[state.lang])}
   <div class="lesson-progress"><div style="width:${((i + 1) / total) * 100}%"></div></div>
   <div class="scene big" id="lessonScene"></div>
-  <div class="lesson-text">
-    ${isIntro
-      ? `<h2>${l.icon} ${l.title[state.lang]}</h2><p class="intro">${l.intro[state.lang]}</p>
-         <button class="mini-btn" onclick="speak(${JSON.stringify(l.intro.tr).replace(/"/g, "&quot;")},'tr')">${t("listenTR")}</button>
-         <button class="mini-btn" onclick="speak(${JSON.stringify(l.intro.en).replace(/"/g, "&quot;")},'en')">${t("listenEN")}</button>`
-      : `<div class="lt-q">🎬 <b>${t("whatHappens")}</b> ${qText(q.q)}</div>
-         <div class="ex-row ex-en">🇬🇧 <b>“${esc(q.a.en)}”</b>
-           <button class="mini-btn" onclick="speak(${JSON.stringify(q.a.en).replace(/"/g, "&quot;")},'en')">🔊</button></div>
-         <div class="ex-row ex-tr">🇹🇷 <b>“${esc(q.a.tr)}”</b>
-           <button class="mini-btn" onclick="speak(${JSON.stringify(q.a.tr + ". " + q.logic.tr).replace(/"/g, "&quot;")},'tr')">🔊</button></div>
-         <div class="ex-row ex-logic">💡 ${esc(state.lang === "tr" ? q.logic.tr : q.logic.en)}</div>
-         <div class="ex-row ex-mnemo">🧠 <code>${esc(q.ezber)}</code></div>`}
-  </div>
+  ${isIntro
+    ? `<div class="teach lesson-teach">${instructorSVG()}
+        <div class="teach-bubble"><b>${l.icon} ${l.title[state.lang]}</b>
+          <span class="tb-why">${l.intro[state.lang]}</span>
+          <button class="mini-btn" onclick="speak(${JSON.stringify(l.intro.tr).replace(/"/g, "&quot;")},'tr')">${t("listenTR")}</button>
+          <button class="mini-btn" onclick="speak(${JSON.stringify(l.intro.en).replace(/"/g, "&quot;")},'en')">${t("listenEN")}</button>
+        </div></div>`
+    : `<div class="teach lesson-teach">${instructorSVG()}
+        <div class="teach-bubble">
+          <div class="lt-q">🎬 <b>${t("whatHappens")}</b> ${qText(q.q)}</div>
+          <div class="ex-row ex-en">🇬🇧 <b>“${esc(q.a.en)}”</b>
+            <button class="mini-btn" onclick="speak(${JSON.stringify(q.a.en).replace(/"/g, "&quot;")},'en')">🔊</button></div>
+          <div class="ex-row ex-tr">🇹🇷 <b>“${esc(q.a.tr)}”</b>
+            <button class="mini-btn" onclick="speak(${JSON.stringify(q.a.tr + ". " + q.logic.tr).replace(/"/g, "&quot;")},'tr')">🔊</button></div>
+          <div class="ex-row ex-logic">💡 ${esc(state.lang === "tr" ? q.logic.tr : q.logic.en)}</div>
+          <div class="ex-row ex-mnemo">🧠 <code>${esc(q.ezber)}</code></div>
+        </div></div>`}
   <button class="text-btn narrate-btn" onclick="narrateStep()">${t("narrate")}</button>
   <div class="lesson-nav">
     <button class="nav-btn" ${i === 0 ? "disabled" : ""} onclick="lessonGo(-1)">← ${t("prev")}</button>
@@ -400,7 +422,15 @@ function renderLessonStep() {
   </div>
   <div class="step-label">${t("step")} ${i + 1} / ${total}</div>`;
 
-  renderScene(isIntro ? "generic" : q.scene, $("#lessonScene"));
+  // Giriş: başkahraman tahtada — tahtaya konu başlığı ve ezber kodları yazılır
+  if (isIntro) {
+    renderScene("classroom", $("#lessonScene"), {
+      title: l.title[state.lang],
+      lines: l.qids.slice(0, 3).map((id) => byId[id].ezber),
+    });
+  } else {
+    renderScene(q.scene, $("#lessonScene"));
+  }
   if (lessonState.auto) {
     // video gibi: sesli anlatım biter bitmez sonraki sahneye geç
     const stepAtStart = lessonState.i;
@@ -432,13 +462,12 @@ function narrateStep(onDone) {
     enText = q.q.en + " The answer is: " + q.a.en + ".";
     trText = "Türkçesi: " + q.q.tr + " Cevap: " + q.a.tr + ". " + q.logic.tr;
   }
-  const uEn = makeUtter(enText, "en");
-  const hasTr = trVoiceOk();
-  const uTr = hasTr ? makeUtter(trText, "tr") : null;
-  const last = uTr || uEn;
-  if (onDone) { last.onend = onDone; state.pendingUtter = last; }
-  state.speech.speak(uEn);
-  if (uTr) state.speech.speak(uTr);
+  const enUtters = ttsSplit(ttsClean(enText, "en")).map((s) => makeUtter(s, "en"));
+  const trUtters = trVoiceOk() ? ttsSplit(ttsClean(trText, "tr")).map((s) => makeUtter(s, "tr")) : [];
+  const all = enUtters.concat(trUtters);
+  const last = all[all.length - 1];
+  if (onDone && last) { last.onend = onDone; state.pendingUtter = last; }
+  all.forEach((u) => state.speech.speak(u));
 }
 
 function toggleAuto() {
@@ -520,6 +549,7 @@ function renderQuiz() {
   app().innerHTML = `${header(true, `${t("quiz")} ${quiz.i + 1}/${quiz.qs.length}`)}
   <div class="quiz-top"><span class="badge">${CATS[q.cat].icon} ${CATS[q.cat][state.lang]}</span>
   <span class="badge score">⭐ ${quiz.score}</span></div>
+  ${q.signId ? "" : `<div class="scene quiz-scene" id="quizScene"></div>`}
   <div class="question-card">${signBlock(q)}${qText(q.q)}</div>
   <div class="options">
     ${opts.map((o, idx) => `<button class="opt" id="opt${idx}" onclick="answerQuiz(${idx})">
@@ -527,6 +557,8 @@ function renderQuiz() {
     </button>`).join("")}
   </div>
   <button class="text-btn" onclick='openExplain(byId["${q.id}"], false, null)'>${t("showAnim")}</button>`;
+  // soru sorulurken görsel oynar (çizgi film hissi)
+  if (!q.signId) renderScene(q.scene, $("#quizScene"));
 }
 
 function answerQuiz(idx) {
@@ -801,6 +833,38 @@ function renderGlossaryList(filter) {
           <div class="gl-words"><b>${esc(en)}</b><span>${esc(tr)}</span></div>
         </div>`).join("")}</div>`
     : `<p class="gl-empty">${t("noResult")}</p>`;
+}
+
+/* =====================================================================
+   CİHAZA KURULUM — PWA: telefon/tablet/bilgisayara uygulama olarak
+   ===================================================================== */
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  state.installEvt = e;
+});
+async function installApp() {
+  if (state.installEvt) {
+    state.installEvt.prompt();
+    try {
+      const r = await state.installEvt.userChoice;
+      if (r && r.outcome === "accepted") toast("🎉 " + t("installed"));
+    } catch (e) { /* kullanıcı vazgeçti */ }
+    state.installEvt = null;
+    return;
+  }
+  setView(installView);
+}
+function installView() {
+  const rows = [
+    ["🤖 Android", t("instAndroid")],
+    ["🍎 iPhone / iPad", t("instIOS")],
+    ["💻 Bilgisayar / PC", t("instPC")],
+  ];
+  app().innerHTML = `${header(true, t("installTitle"))}
+  <p class="page-sub">${t("installIntro")}</p>
+  ${rows.map(([k, v]) => `<div class="setup-card"><h3>${k}</h3><p class="inst-p">${v}</p></div>`).join("")}
+  <div class="setup-card inst-note">💡 ${t("instNote")}</div>
+  <button class="big-btn ghost" onclick="goHome()">${t("backHome")}</button>`;
 }
 
 /* =====================================================================

@@ -50,8 +50,83 @@ function bubble(x, y, text, cls = "") {
 
 const trafficLightSVG = (cls) => `<g class="${cls}"><rect x="0" y="0" width="34" height="86" rx="8" fill="#2f3640"/><circle class="tl-red" cx="17" cy="17" r="10" fill="#e74c3c"/><circle class="tl-amber" cx="17" cy="43" r="10" fill="#f6b93b"/><circle class="tl-green" cx="17" cy="69" r="10" fill="#2ecc71"/><rect x="13" y="86" width="8" height="46" fill="#2f3640"/></g>`;
 
+/* ---- EĞİTMEN KARAKTERİ — başkahraman: tahtada anlatır, yanlışta düzeltir ---- */
+const xesc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+function instructorBody(flip = false) {
+  // flip=true: karakter aynalanınca şapkadaki L rozetini düz tut
+  const badge = flip
+    ? `<g transform="translate(120,0) scale(-1,1)"><rect x="52" y="24" width="16" height="10" rx="2" fill="#fff"/><text x="60" y="32.5" font-size="8.5" font-weight="800" text-anchor="middle" fill="#c0392b">L</text></g>`
+    : `<rect x="52" y="24" width="16" height="10" rx="2" fill="#fff"/><text x="60" y="32.5" font-size="8.5" font-weight="800" text-anchor="middle" fill="#c0392b">L</text>`;
+  return _instrBase(badge);
+}
+function _instrBase(badge) {
+  return `<ellipse cx="60" cy="143" rx="34" ry="6" fill="rgba(0,0,0,.15)"/>
+    <rect x="38" y="72" width="44" height="52" rx="14" fill="#2e86de"/>
+    <rect x="46" y="80" width="28" height="20" rx="5" fill="#fff"/>
+    <rect x="50" y="84" width="20" height="4" rx="2" fill="#2e86de"/>
+    <path d="M44 124 L44 143 M76 124 L76 143" stroke="#1b4f72" stroke-width="11" stroke-linecap="round"/>
+    <path d="M40 82 Q22 92 20 110" stroke="#2e86de" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <circle cx="19" cy="113" r="6.5" fill="#f3c188"/>
+    <g class="teach-arm">
+      <path d="M80 82 Q100 70 108 52" stroke="#2e86de" stroke-width="10" stroke-linecap="round" fill="none"/>
+      <circle cx="110" cy="49" r="6.5" fill="#f3c188"/>
+      <path d="M110 49 L118 38" stroke="#f3c188" stroke-width="5" stroke-linecap="round"/>
+    </g>
+    <circle cx="60" cy="46" r="24" fill="#f3c188"/>
+    <path d="M36 42 Q38 20 60 20 Q82 20 84 42 L84 36 Q84 30 78 30 L42 30 Q36 30 36 36 Z" fill="#2d3436"/>
+    <rect x="34" y="38" width="52" height="7" rx="3.5" fill="#2d3436"/>
+    ${badge}
+    <g class="teach-eyes"><circle cx="51" cy="48" r="3" fill="#2d3436"/><circle cx="69" cy="48" r="3" fill="#2d3436"/></g>
+    <path d="M46 55 Q48 53 50 55" stroke="#c58b52" stroke-width="1.6" fill="none"/>
+    <ellipse class="teach-mouth" cx="60" cy="62" rx="6" ry="4" fill="#7f4330"/>`;
+}
+function instructorSVG() {
+  return `<svg viewBox="0 0 120 150" class="teach-figure">${instructorBody()}</svg>`;
+}
 /* ---- SAHNELER ---- */
 const SCENES = {
+
+  /* HİKÂYE: arkadaki araç çarpar — geç sinyal / yakın takip sonucu */
+  crash: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}${ROAD}
+    <g class="an-crash-front"><g transform="translate(190,158)">${toonCar("", "#20bf6b")}</g></g>
+    <g class="an-crash-rear"><g transform="translate(-140,158)">${toonCar("", "#eb3b5a")}</g></g>
+    <g transform="translate(196,150)"><g class="an-boom">
+      <path d="M0 -22 L7 -7 L24 -12 L13 2 L26 12 L8 11 L6 28 L-4 13 L-20 20 L-11 4 L-26 -2 L-9 -6 Z" fill="#f6b93b" stroke="#e17055" stroke-width="3"/>
+      <text x="0" y="6" font-size="15" font-weight="900" text-anchor="middle" fill="#c0392b">BAM!</text></g></g>
+    ${cap("💥 Çok geç kaldın — arkadan çarptı!", 12, 12, "#c0392b")}
+    ${cap("Too late — rear-end crash!", 12, 44, "#c0392b")}</svg>`,
+
+  /* HİKÂYE: çocuk fırlar, araç son anda durur — yavaş olsaydın */
+  nearmiss: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}${ROAD}
+    <g transform="translate(236,142)"><rect x="0" y="10" width="120" height="44" rx="9" fill="#f5f6fa" stroke="#dcdde1" stroke-width="2"/><rect x="86" y="18" width="30" height="18" rx="4" fill="#74b9ff"/><circle cx="26" cy="56" r="11" fill="#2f3640"/><circle cx="96" cy="56" r="11" fill="#2f3640"/></g>
+    <circle class="an-ball2" cx="300" cy="212" r="9" fill="#e74c3c"/>
+    <g class="an-child2" transform="translate(310,196)">${walker("an-walkanim", "#fd79a8", .8)}</g>
+    <g class="an-hardbrake"><g transform="translate(-130,158)">${toonCar("", "#00b894")}</g></g>
+    <path class="an-skidmark" d="M96 214 H150 M100 222 H154" stroke="#39424e" stroke-width="5"/>
+    <text class="an-phew" x="196" y="120" font-size="30">😅</text>
+    ${cap("🛑 Son anda durdun! Yavaş olsaydın panik olmazdı", 12, 12, "#c0392b")}</svg>`,
+
+  /* SINIF: başkahraman tahtanın başında konuyu anlatır */
+  classroom: (arg) => {
+    const a = arg || {};
+    const title = xesc(a.title || "Ders");
+    const lines = (a.lines || []).slice(0, 3).map((l, i) =>
+      `<text x="44" y="${96 + i * 25}" font-size="13.5" font-weight="700" fill="#eafff3" font-style="italic" class="an-chalk an-chalk${i}">✏️ ${xesc(l)}</text>`).join("");
+    return `<svg viewBox="0 0 400 240">
+    <rect width="400" height="240" fill="#f6edda"/>
+    <rect y="198" width="400" height="42" fill="#c9a173"/><rect y="198" width="400" height="6" fill="#b08a5c"/>
+    <rect x="20" y="24" width="276" height="156" rx="10" fill="#7a5230"/>
+    <rect x="29" y="33" width="258" height="138" rx="6" fill="#2e6b4f"/>
+    <text x="44" y="62" font-size="16.5" font-weight="800" fill="#fff">${title}</text>
+    <path d="M44 70 H272" stroke="#b7e4c7" stroke-width="2" stroke-dasharray="4 3"/>
+    ${lines}
+    <rect x="29" y="172" width="258" height="8" fill="#8d6b48"/>
+    <rect x="200" y="173" width="26" height="5" rx="2.5" fill="#fff"/>
+    <g transform="translate(392,86) scale(-0.95,0.95)">${instructorBody(true)}</g>
+    <g transform="translate(318,44)" class="an-pulse"><text font-size="20">💡</text></g>
+  </svg>`;
+  },
+
 
   skid: () => `<svg viewBox="0 0 400 240">${SKY_DAY}${GRASS}${ROAD}
     <path d="M40 210 q28 -7 52 0 q-22 6 -46 3" fill="none" stroke="#39424e" stroke-width="5" class="an-fadein"/>
@@ -308,7 +383,7 @@ const SCENES = {
     ${cap("Kararsızsan → EN GÜVENLİ seçenek! 🛡️", 52, 202)}</svg>`,
 };
 
-function renderScene(name, container) {
+function renderScene(name, container, arg) {
   const fn = SCENES[name] || SCENES.generic;
-  container.innerHTML = `<div class="scene-frame">${fn()}</div>`;
+  container.innerHTML = `<div class="scene-frame">${fn(arg)}</div>`;
 }
