@@ -1,5 +1,5 @@
 /* Çevrimdışı çalışma için service worker */
-const CACHE = "ehliyet-kankam-v1";
+const CACHE = "ehliyet-kankam-v2";
 const ASSETS = [
   ".", "index.html", "css/style.css",
   "js/questions.js", "js/content.js", "js/scenes.js", "js/app.js",

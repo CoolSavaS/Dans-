@@ -142,8 +142,18 @@ function queueText(text, lang) {
   return utters;
 }
 
+/* Sesli anlatım tamamen kapatılabilir (robotik ses istemeyenler için) */
+function isMuted() { return localStorage.getItem("ek-mute") === "1"; }
+function toggleMute() {
+  const m = !isMuted();
+  localStorage.setItem("ek-mute", m ? "1" : "0");
+  stopSpeech();
+  if (m) toast(t("mutedNow"));
+  rerender();
+}
+
 function speak(text, lang) {
-  if (!state.speech) return;
+  if (!state.speech || isMuted()) return;
   stopSpeech();
   if (lang === "tr" && !trVoiceOk()) return;
   queueText(text, lang);
@@ -352,7 +362,7 @@ function openExplain(q, isWrong, cb) {
   }
   // eğitmen konuşur: önce İngilizce (sınav dili), sonra Türkçesi + nedeni
   setTimeout(() => {
-    if (!state.speech) return;
+    if (!state.speech || isMuted()) return;
     stopSpeech();
     queueText((isWrong ? "No, not like that! The correct answer is: " : "The correct answer is: ") + q.a.en + ".", "en");
     if (trVoiceOk()) queueText((isWrong ? "Hayır, öyle değil! Doğrusu: " : "Doğrusu: ") + q.a.tr + ". Çünkü " + q.logic.tr, "tr");
@@ -451,7 +461,7 @@ function renderLessonStep() {
 /* Her adımı iki dilde seslendir: önce İngilizce (sınav dili), sonra Türkçe.
    onDone verilirse Türkçe anlatım bitince çağrılır (video akışı için). */
 function narrateStep(onDone) {
-  if (!state.speech) { if (onDone) onDone(); return; }
+  if (!state.speech || isMuted()) { if (onDone) setTimeout(onDone, 5000); return; }
   const { l, i } = lessonState;
   stopSpeech();
   let enText, trText;
@@ -888,6 +898,7 @@ function voiceView() {
     ? `<div class="setup-card inst-note">${t("compactWarn")}</div>` : "";
   app().innerHTML = `${header(true, t("voiceSettings"))}
   <p class="page-sub">${t("voiceIntro")}</p>
+  <button class="big-btn ${isMuted() ? "" : "ghost"}" onclick="toggleMute()">${isMuted() ? t("muteOff") : t("muteOn")}</button>
   <div class="setup-card inst-note"><b>${t("voiceFixTitle")}</b>
     <p class="inst-p">🍎 ${t("voiceFixIOS")}</p>
     <p class="inst-p">🤖 ${t("voiceFixAnd")}</p></div>
