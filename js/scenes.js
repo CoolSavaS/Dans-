@@ -3,26 +3,46 @@
    Sahneler CSS keyframe'leriyle (style.css) hareket eder.
    ===================================================================== */
 
-/* ---- ortak parçalar ---- */
-const SKY_DAY = `<rect width="400" height="240" fill="#aee3f7"/><circle cx="345" cy="42" r="22" fill="#ffd54d" class="an-sun"/><g class="an-cloud1"><ellipse cx="80" cy="45" rx="30" ry="13" fill="#fff"/><ellipse cx="105" cy="38" rx="22" ry="11" fill="#fff"/></g><g class="an-cloud2"><ellipse cx="240" cy="60" rx="26" ry="11" fill="#fff" opacity=".9"/></g>`;
-const SKY_NIGHT = `<rect width="400" height="240" fill="#1a2447"/><circle cx="340" cy="45" r="18" fill="#f5f0d8"/><circle cx="332" cy="40" r="16" fill="#1a2447"/><g fill="#fff"><circle cx="60" cy="40" r="2" class="an-blink"/><circle cx="140" cy="25" r="1.6"/><circle cx="210" cy="55" r="2" class="an-blink2"/><circle cx="280" cy="30" r="1.5"/><circle cx="100" cy="70" r="1.5" class="an-blink"/></g>`;
-const GRASS = `<rect y="150" width="400" height="90" fill="#8fd06c"/>`;
-const ROAD = `<rect y="168" width="400" height="58" fill="#5b6270"/><g stroke="#fff" stroke-width="4" stroke-dasharray="22 18"><line x1="0" y1="197" x2="400" y2="197"/></g>`;
+/* ---- ortak parçalar (modern, degrade + yumuşak gölge) ---- */
+const SKY_DAY = `<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ec7f2"/><stop offset="1" stop-color="#d6f0fb"/></linearGradient>
+  <radialGradient id="sun" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="#fff6c4"/><stop offset="1" stop-color="#ffd23f"/></radialGradient>
+</defs>
+<rect width="400" height="240" fill="url(#sky)"/>
+<circle cx="345" cy="42" r="34" fill="#fff6c8" opacity=".45" class="an-sun"/>
+<circle cx="345" cy="42" r="22" fill="url(#sun)" class="an-sun"/>
+<g class="an-cloud1"><ellipse cx="82" cy="48" rx="32" ry="14" fill="#fff"/><ellipse cx="108" cy="40" rx="24" ry="12" fill="#fff"/><ellipse cx="66" cy="42" rx="18" ry="10" fill="#fff"/><ellipse cx="90" cy="54" rx="34" ry="9" fill="#eaf6fd"/></g>
+<g class="an-cloud2"><ellipse cx="242" cy="62" rx="28" ry="12" fill="#fff" opacity=".95"/><ellipse cx="262" cy="58" rx="18" ry="9" fill="#fff" opacity=".9"/></g>`;
+const SKY_NIGHT = `<defs><linearGradient id="night" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#141d3d"/><stop offset="1" stop-color="#2a3763"/></linearGradient></defs>
+<rect width="400" height="240" fill="url(#night)"/>
+<circle cx="340" cy="45" r="19" fill="#f7f2dc"/><circle cx="333" cy="41" r="15" fill="#243b6b" opacity=".55"/>
+<g fill="#fff"><circle cx="60" cy="40" r="2" class="an-blink"/><circle cx="140" cy="25" r="1.6"/><circle cx="210" cy="55" r="2" class="an-blink2"/><circle cx="280" cy="30" r="1.5"/><circle cx="100" cy="70" r="1.5" class="an-blink"/><circle cx="190" cy="34" r="1.3"/><circle cx="40" cy="80" r="1.3" class="an-blink2"/></g>`;
+const GRASS = `<defs><linearGradient id="grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a6e284"/><stop offset="1" stop-color="#77bd54"/></linearGradient></defs>
+<path d="M0 150 Q100 137 200 147 Q300 157 400 145 V240 H0 Z" fill="url(#grass)"/>
+<path d="M0 152 Q100 139 200 149 Q300 159 400 147 V158 Q300 168 200 158 Q100 148 0 161 Z" fill="#fff" opacity=".12"/>`;
+const ROAD = `<defs><linearGradient id="road" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a7180"/><stop offset="1" stop-color="#474e5c"/></linearGradient></defs>
+<rect y="168" width="400" height="58" fill="url(#road)"/>
+<rect y="168" width="400" height="5" fill="#fff" opacity=".12"/>
+<g stroke="#fff" stroke-width="4" stroke-dasharray="22 18" opacity=".92"><line x1="0" y1="197" x2="400" y2="197"/></g>`;
 
-/* Sevimli çizgi film arabası (yüzlü) */
+/* Sevimli, modern çizgi film arabası — degrade gövde, cam parlaması, jant */
 function toonCar(cls = "", color = "#ff6b6b", extra = "") {
   return `<g class="${cls}">
-    <ellipse cx="60" cy="52" rx="52" ry="6" fill="rgba(0,0,0,.15)"/>
-    <rect x="8" y="18" width="104" height="28" rx="12" fill="${color}"/>
-    <path d="M28 20 Q34 2 56 2 H76 Q94 2 100 20 Z" fill="${color}"/>
-    <path d="M36 18 Q40 7 55 7 H63 V18 Z" fill="#dff3fb"/>
-    <path d="M67 7 H75 Q88 7 93 18 H67 Z" fill="#dff3fb"/>
-    <circle cx="50" cy="13" r="2.6" fill="#333"/><circle cx="72" cy="13" r="2.6" fill="#333"/>
-    <path d="M56 16 q5 4 10 0" stroke="#333" stroke-width="1.8" fill="none"/>
-    <rect x="106" y="26" width="8" height="9" rx="2" fill="#ffe08a"/>
-    <rect x="6" y="26" width="7" height="9" rx="2" fill="#e74c3c" class="an-brakelight"/>
-    <g class="an-wheel"><circle cx="32" cy="48" r="12" fill="#2f3640"/><circle cx="32" cy="48" r="5.5" fill="#b0b7c3"/><rect x="30.8" y="38" width="2.4" height="8" fill="#b0b7c3"/></g>
-    <g class="an-wheel"><circle cx="88" cy="48" r="12" fill="#2f3640"/><circle cx="88" cy="48" r="5.5" fill="#b0b7c3"/><rect x="86.8" y="38" width="2.4" height="8" fill="#b0b7c3"/></g>
+    <ellipse cx="62" cy="55" rx="56" ry="7" fill="rgba(15,20,45,.16)"/>
+    <path d="M26 20 Q32 1 56 1 H78 Q98 1 102 20 Z" fill="${color}"/>
+    <rect x="5" y="17" width="110" height="31" rx="15" fill="${color}"/>
+    <rect x="5" y="37" width="110" height="11" rx="6" fill="rgba(0,0,0,.15)"/>
+    <rect x="9" y="18" width="102" height="7" rx="5" fill="rgba(255,255,255,.32)"/>
+    <path d="M34 17 Q38 6 54 6 H62 V17 Z" fill="#d2eefb"/>
+    <path d="M66 6 H74 Q91 6 96 17 H66 Z" fill="#d2eefb"/>
+    <path d="M37 15 L47 8" stroke="#fff" stroke-width="2.6" opacity=".75" stroke-linecap="round"/>
+    <circle cx="50" cy="13" r="3" fill="#2d3436"/><circle cx="72" cy="13" r="3" fill="#2d3436"/>
+    <circle cx="51.2" cy="11.8" r=".95" fill="#fff"/><circle cx="73.2" cy="11.8" r=".95" fill="#fff"/>
+    <path d="M55 16 q6 5 12 0" stroke="#2d3436" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <rect x="107" y="27" width="9" height="9" rx="3" fill="#fff2b0"/>
+    <rect x="4" y="27" width="8" height="9" rx="3" fill="#ff5a5a" class="an-brakelight"/>
+    <g class="an-wheel"><circle cx="34" cy="49" r="13" fill="#2b2f3a"/><circle cx="34" cy="49" r="6.6" fill="#cbd1dc"/><circle cx="34" cy="49" r="2.6" fill="#868ea0"/></g>
+    <g class="an-wheel"><circle cx="88" cy="49" r="13" fill="#2b2f3a"/><circle cx="88" cy="49" r="6.6" fill="#cbd1dc"/><circle cx="88" cy="49" r="2.6" fill="#868ea0"/></g>
     ${extra}</g>`;
 }
 

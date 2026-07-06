@@ -3,15 +3,17 @@
    ===================================================================== */
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 :root {
-  --bg: #f0f6ff; --card: #ffffff; --ink: #2d3436; --sub: #636e72;
+  --bg: #eef4ff; --card: #ffffff; --ink: #222a3d; --sub: #6b7488;
   --brand: #4b7bec; --brand2: #a55eea; --good: #20bf6b; --bad: #eb3b5a;
-  --amber: #f7b731; --radius: 18px;
-  --shadow: 0 4px 14px rgba(45, 52, 84, .12);
+  --amber: #f7b731; --radius: 20px;
+  --shadow: 0 2px 6px rgba(35, 45, 80, .06), 0 10px 26px rgba(35, 45, 80, .10);
+  --shadow-lg: 0 8px 20px rgba(35, 45, 80, .12), 0 20px 48px rgba(35, 45, 80, .16);
 }
 html { font-size: 16px; }
 body {
   font-family: "Nunito", "Segoe UI", -apple-system, system-ui, sans-serif;
-  background: var(--bg); color: var(--ink);
+  background: radial-gradient(1200px 600px at 50% -120px, #dbe8ff 0%, var(--bg) 60%) fixed;
+  color: var(--ink);
   min-height: 100vh; padding-bottom: 40px;
 }
 #app { max-width: 560px; margin: 0 auto; padding: 0 14px calc(20px + env(safe-area-inset-bottom)); }
@@ -50,12 +52,15 @@ button { font-family: inherit; cursor: pointer; border: none; }
 
 .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .menu-card {
-  background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
-  padding: 18px 14px; text-align: left; display: flex; flex-direction: column; gap: 4px;
-  transition: transform .15s;
+  background: linear-gradient(160deg, #ffffff 0%, #f7faff 100%);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 18px 15px; text-align: left; display: flex; flex-direction: column; gap: 4px;
+  transition: transform .18s cubic-bezier(.2,.8,.3,1), box-shadow .18s;
+  border: 1px solid rgba(75,123,236,.08);
   border-bottom: 4px solid transparent;
 }
-.menu-card:active { transform: scale(.96); }
+.menu-card:active { transform: scale(.95) translateY(1px); }
+@media (hover:hover) { .menu-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); } }
 .menu-card.wide { grid-column: 1 / -1; }
 .mc-icon { font-size: 1.9rem; }
 .mc-title { font-weight: 900; font-size: 1.05rem; }
@@ -213,11 +218,12 @@ button { font-family: inherit; cursor: pointer; border: none; }
 .mini-btn { background: #eef3fd; border-radius: 10px; padding: 5px 10px; font-size: .8rem; font-weight: 800; color: var(--brand); margin: 4px 4px 0 0; }
 .big-btn {
   display: block; width: calc(100% - 32px); margin: 12px auto 0;
-  background: linear-gradient(90deg, var(--brand), var(--brand2));
-  color: #fff; font-weight: 900; font-size: 1rem; padding: 15px; border-radius: 16px;
-  box-shadow: 0 6px 16px rgba(75, 123, 236, .35);
+  background: linear-gradient(135deg, #5a86f5 0%, #a55eea 100%);
+  color: #fff; font-weight: 900; font-size: 1.02rem; padding: 15px; border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(90, 100, 230, .38), inset 0 1px 0 rgba(255,255,255,.35);
+  transition: transform .15s, box-shadow .15s; letter-spacing: .2px;
 }
-.big-btn:active { transform: scale(.97); }
+.big-btn:active { transform: scale(.97) translateY(1px); box-shadow: 0 3px 10px rgba(90,100,230,.34); }
 .big-btn.ghost { background: var(--card); color: var(--brand); box-shadow: var(--shadow); }
 
 /* ---------- kategori seçimi ---------- */

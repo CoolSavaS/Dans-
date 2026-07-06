@@ -5,7 +5,7 @@
    uygulama açılır. Gezinme (navigation) istekleri her zaman önbellekteki
    index.html'e düşer.
    ===================================================================== */
-const CACHE = "ehliyet-kankam-v3";
+const CACHE = "ehliyet-kankam-v4";
 const ASSETS = [
   "./", "index.html", "css/style.css",
   "js/questions.js", "js/content.js", "js/scenes.js", "js/app.js",
