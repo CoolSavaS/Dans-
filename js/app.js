@@ -87,6 +87,7 @@ function pickVoice(lang) {
     }
     if (v.default) s += 1;
     if (n.includes("espeak") || n.includes("eloquence")) s -= 8;
+    if (n.includes("compact")) s -= 6;   // düşük kaliteli 'compact' sesi ele
     return s;
   };
   return cands.slice().sort((a, b) => score(b) - score(a))[0];
