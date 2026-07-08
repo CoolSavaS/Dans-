@@ -9030,7 +9030,7 @@
    "catkey": "docs",
    "scene": "generic",
    "qen": "An injured person has been placed in the recovery position. They’re unconscious but breathing normally. What else should ve done?",
-   "aen": "kurtarma",
+   "aen": "Check their airway remains open",
    "dist": [
     "Unlimited",
     "Valid insurance",
