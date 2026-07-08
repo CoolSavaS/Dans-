@@ -60,7 +60,58 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 function stopSpeech() {
   // iptal edilen sesin onend'i tetiklenip otomatik akışı bozmasın
   if (state.pendingUtter) { state.pendingUtter.onend = null; state.pendingUtter = null; }
+  if (state.clip) { try { state.clip.onended = null; state.clip.pause(); } catch (e) {} state.clip = null; }
   if (state.speech) state.speech.cancel();
+}
+
+/* ---- GÖMÜLÜ TÜRKÇE SES (MBROLA insan kaydı, internetsiz) ----
+   audio/tr/<id>.mp3 klipleri; cihaz sesine bağımlı değil. */
+let EMB_AUDIO = new Set(window.EMB_AUDIO_IDS || []);   // JS sabitinden (file:// uyumlu)
+if (!EMB_AUDIO.size) fetch("audio/tr/index.json").then((r) => r.json()).then((a) => { EMB_AUDIO = new Set(a); }).catch(() => {});
+function embVoiceOn() { return localStorage.getItem("ek-embvoice") !== "0"; }  // varsayılan AÇIK
+function hasClip(id) { return embVoiceOn() && EMB_AUDIO.has(id); }
+function playClip(id, onEnd) {
+  const done = onEnd || function () {};
+  try {
+    const a = new Audio("audio/tr/" + id + ".mp3");
+    a.playbackRate = 1.0;
+    state.clip = a;
+    a.onended = done; a.onerror = done;
+    a.play().catch(done);
+  } catch (e) { done(); }
+}
+
+/* EN (cihaz sesi) → sonra TR: gömülü klip varsa onu çal, yoksa cihaz sesi.
+   EN sesi hiç çalmazsa (cihazda İngilizce ses yoksa) güvenlik zamanlayıcısı
+   yine de Türkçeye geçirir — böylece anlatım asla takılmaz. */
+function narrateEnThenTr(enText, trText, trId, onDone) {
+  const done = onDone || function () {};
+  if (isMuted()) { if (onDone) setTimeout(done, 3500); return; }
+  stopSpeech();
+  let advanced = false;
+  const trStep = () => {
+    if (advanced) return; advanced = true;
+    if (hasClip(trId)) return playClip(trId, done);
+    if (state.speech && trVoiceOk()) {
+      const u = ttsSplit(ttsClean(trText, "tr")).map((s) => makeUtter(s, "tr"));
+      if (u.length) { u[u.length - 1].onend = done; state.pendingUtter = u[u.length - 1]; u.forEach((x) => state.speech.speak(x)); return; }
+    }
+    done();
+  };
+  if (state.speech) {
+    const e = ttsSplit(ttsClean(enText, "en")).map((s) => makeUtter(s, "en"));
+    if (e.length) {
+      e[e.length - 1].onend = trStep;
+      e.forEach((x) => state.speech.speak(x));
+      setTimeout(trStep, Math.min(9000, Math.max(1800, enText.length * 70))); // ses motoru yoksa emniyet
+      return;
+    }
+  }
+  trStep();
+}
+function toggleEmbVoice() {
+  localStorage.setItem("ek-embvoice", embVoiceOn() ? "0" : "1");
+  stopSpeech(); rerender();
 }
 
 /* --- Ses kalitesi: cihazdaki EN İYİ sesi seç ---
@@ -219,7 +270,8 @@ function sfx(ok) {
 function qText(obj) {
   if (state.qlang === "en") return `<div class="q-en">${esc(obj.en)}</div>`;
   if (state.qlang === "tr") return `<div class="q-tr">${esc(obj.tr)}</div>`;
-  return `<div class="q-en">${esc(obj.en)}</div><div class="q-tr">${esc(obj.tr)}</div>`;
+  if (obj.tr && obj.tr !== obj.en) return `<div class="q-en">${esc(obj.en)}</div><div class="q-tr">${esc(obj.tr)}</div>`;
+  return `<div class="q-en">${esc(obj.en)}</div>`;
 }
 
 function header(showBack, title) {
@@ -338,14 +390,14 @@ function explainHTML(q, isWrong) {
       <div class="scene" id="modalScene"></div>
       ${isWrong ? `<div class="teach">${instructorSVG()}
         <div class="teach-bubble"><b>${state.lang === "tr" ? "Hayır, öyle değil! Doğrusu:" : "No, not like that! The answer is:"}</b> “${esc(state.lang === "tr" ? q.a.tr : q.a.en)}”
-        <span class="tb-why">${state.lang === "tr" ? "Çünkü" : "Because"}: ${esc(state.lang === "tr" ? q.logic.tr : q.logic.en)}</span></div></div>` : ""}
+        ${(state.lang === "tr" ? q.logic.tr : q.logic.en) ? `<span class="tb-why">${state.lang === "tr" ? "Çünkü" : "Because"}: ${esc(state.lang === "tr" ? q.logic.tr : q.logic.en)}</span>` : ""}</div></div>` : ""}
       <div class="explain">
         <div class="ex-row ex-en"><span class="ex-label">🇬🇧 ${t("inEnglish")}:</span><b>“${esc(q.a.en)}”</b>
           <button class="mini-btn" onclick="speak(${JSON.stringify(q.q.en + ". The answer is: " + q.a.en + ". " + q.logic.en).replace(/"/g, "&quot;")},'en')">🔊</button></div>
         <div class="ex-row ex-tr"><span class="ex-label">🇹🇷 ${t("inTurkish")}:</span><b>“${esc(q.a.tr)}”</b>
           <button class="mini-btn" onclick="speak(${JSON.stringify(q.q.tr + ". Cevap: " + q.a.tr + ". " + q.logic.tr).replace(/"/g, "&quot;")},'tr')">🔊</button></div>
-        <div class="ex-row ex-logic">💡 <b>${t("logic")}:</b> ${esc(state.lang === "tr" ? q.logic.tr : q.logic.en)}</div>
-        <div class="ex-row ex-mnemo">🧠 <b>${t("mnemonic")}:</b> <code>${esc(q.ezber)}</code></div>
+        ${(state.lang === "tr" ? q.logic.tr : q.logic.en) ? `<div class="ex-row ex-logic">💡 <b>${t("logic")}:</b> ${esc(state.lang === "tr" ? q.logic.tr : q.logic.en)}</div>` : ""}
+        ${q.ezber ? `<div class="ex-row ex-mnemo">🧠 <b>${t("mnemonic")}:</b> <code>${esc(q.ezber)}</code></div>` : ""}
       </div>
       <button class="big-btn" onclick="closeModal()">${t("continueBtn")} →</button>
     </div></div>`;
@@ -361,12 +413,13 @@ function openExplain(q, isWrong, cb) {
     // yanlışsa önce "sonuç" hikâyesi (kaza / son anda fren), yoksa konu sahnesi
     renderScene((isWrong && STORY[q.scene]) || q.scene, $("#modalScene"));
   }
-  // eğitmen konuşur: önce İngilizce (sınav dili), sonra Türkçesi + nedeni
+  // eğitmen konuşur: önce İngilizce (sınav dili), sonra Türkçesi (gömülü klip varsa insan sesi)
   setTimeout(() => {
-    if (!state.speech || isMuted()) return;
-    stopSpeech();
-    queueText((isWrong ? "No, not like that! The correct answer is: " : "The correct answer is: ") + q.a.en + ".", "en");
-    if (trVoiceOk()) queueText((isWrong ? "Hayır, öyle değil! Doğrusu: " : "Doğrusu: ") + q.a.tr + ". Çünkü " + q.logic.tr, "tr");
+    narrateEnThenTr(
+      (isWrong ? "No, not like that! The correct answer is: " : "The correct answer is: ") + q.a.en + ".",
+      (isWrong ? "Hayır, öyle değil! Doğrusu: " : "Doğrusu: ") + q.a.tr + (q.logic.tr ? ". Çünkü " + q.logic.tr : ""),
+      q.id
+    );
   }, 350);
 }
 function closeModal() {
@@ -462,23 +515,18 @@ function renderLessonStep() {
 /* Her adımı iki dilde seslendir: önce İngilizce (sınav dili), sonra Türkçe.
    onDone verilirse Türkçe anlatım bitince çağrılır (video akışı için). */
 function narrateStep(onDone) {
-  if (!state.speech || isMuted()) { if (onDone) setTimeout(onDone, 5000); return; }
+  if (isMuted()) { if (onDone) setTimeout(onDone, 5000); return; }
   const { l, i } = lessonState;
-  stopSpeech();
-  let enText, trText;
+  let enText, trText, trId;
   if (i === 0) {
-    enText = l.intro.en; trText = l.intro.tr;
+    enText = l.intro.en; trText = l.intro.tr; trId = l.id;
   } else {
     const q = byId[l.qids[i - 1]];
     enText = q.q.en + " The answer is: " + q.a.en + ".";
     trText = "Türkçesi: " + q.q.tr + " Cevap: " + q.a.tr + ". " + q.logic.tr;
+    trId = q.id;
   }
-  const enUtters = ttsSplit(ttsClean(enText, "en")).map((s) => makeUtter(s, "en"));
-  const trUtters = trVoiceOk() ? ttsSplit(ttsClean(trText, "tr")).map((s) => makeUtter(s, "tr")) : [];
-  const all = enUtters.concat(trUtters);
-  const last = all[all.length - 1];
-  if (onDone && last) { last.onend = onDone; state.pendingUtter = last; }
-  all.forEach((u) => state.speech.speak(u));
+  narrateEnThenTr(enText, trText, trId, onDone);
 }
 
 function toggleAuto() {
@@ -564,7 +612,7 @@ function renderQuiz() {
   <div class="question-card">${signBlock(q)}${qText(q.q)}</div>
   <div class="options">
     ${opts.map((o, idx) => `<button class="opt" id="opt${idx}" onclick="answerQuiz(${idx})">
-      ${state.qlang === "en" ? esc(o.en) : state.qlang === "tr" ? esc(o.tr) : `<span class="o-en">${esc(o.en)}</span><span class="o-tr">${esc(o.tr)}</span>`}
+      ${state.qlang === "en" ? esc(o.en) : state.qlang === "tr" ? esc(o.tr) : (o.tr && o.tr !== o.en ? `<span class="o-en">${esc(o.en)}</span><span class="o-tr">${esc(o.tr)}</span>` : `<span class="o-en">${esc(o.en)}</span>`)}
     </button>`).join("")}
   </div>
   <button class="text-btn" onclick='openExplain(byId["${q.id}"], false, null)'>${t("showAnim")}</button>`;
@@ -657,7 +705,7 @@ function renderMock() {
   <div class="question-card">${signBlock(q)}${qText(q.q)}</div>
   <div class="options">
     ${opts.map((o, idx) => `<button class="opt" onclick="answerMock(${idx})">
-      ${state.qlang === "en" ? esc(o.en) : state.qlang === "tr" ? esc(o.tr) : `<span class="o-en">${esc(o.en)}</span><span class="o-tr">${esc(o.tr)}</span>`}
+      ${state.qlang === "en" ? esc(o.en) : state.qlang === "tr" ? esc(o.tr) : (o.tr && o.tr !== o.en ? `<span class="o-en">${esc(o.en)}</span><span class="o-tr">${esc(o.tr)}</span>` : `<span class="o-en">${esc(o.en)}</span>`)}
     </button>`).join("")}
   </div>`;
 }
@@ -708,15 +756,15 @@ function renderCard() {
   <div class="card-stage">
     <div class="flashcard ${cards.flipped ? "flipped" : ""}" onclick="flipCard()">
       <div class="fc-face fc-front">
-        <div class="fc-key">${esc(q.ezber.split("=")[0].trim().toUpperCase())}</div>
+        <div class="fc-key">${esc((q.ezber ? q.ezber.split("=")[0].trim() : (CATS[q.cat] ? CATS[q.cat][state.lang] : "")).toUpperCase())}</div>
         ${qText(q.q)}
         <div class="fc-hint">👆 ${t("flip")}</div>
       </div>
       <div class="fc-face fc-back">
         <div class="ex-row ex-en">🇬🇧 <b>${esc(q.a.en)}</b></div>
         <div class="ex-row ex-tr">🇹🇷 <b>${esc(q.a.tr)}</b></div>
-        <div class="ex-row ex-mnemo">🧠 <code>${esc(q.ezber)}</code></div>
-        <div class="ex-row ex-logic">💡 ${esc(state.lang === "tr" ? q.logic.tr : q.logic.en)}</div>
+        ${q.ezber ? `<div class="ex-row ex-mnemo">🧠 <code>${esc(q.ezber)}</code></div>` : ""}
+        ${(state.lang === "tr" ? q.logic.tr : q.logic.en) ? `<div class="ex-row ex-logic">💡 ${esc(state.lang === "tr" ? q.logic.tr : q.logic.en)}</div>` : ""}
         <button class="mini-btn" onclick="event.stopPropagation();speak(${JSON.stringify(q.a.en).replace(/"/g, "&quot;")},'en')">${t("listenEN")}</button>
         <button class="mini-btn" onclick="event.stopPropagation();openExplain(byId['${q.id}'],false,null)">🎬</button>
       </div>
@@ -899,6 +947,11 @@ function voiceView() {
     ? `<div class="setup-card inst-note">${t("compactWarn")}</div>` : "";
   app().innerHTML = `${header(true, t("voiceSettings"))}
   <p class="page-sub">${t("voiceIntro")}</p>
+  <div class="setup-card" style="border-left:4px solid #26de81">
+    <button class="big-btn ${embVoiceOn() ? "" : "ghost"}" onclick="toggleEmbVoice()">${embVoiceOn() ? t("embOn") : t("embOff")}</button>
+    <p class="inst-p">${t("embDesc")}</p>
+    <button class="mini-btn" onclick="playClip('skid_brake')">${t("voiceTest")} 🎙️</button>
+  </div>
   <button class="big-btn ${isMuted() ? "" : "ghost"}" onclick="toggleMute()">${isMuted() ? t("muteOff") : t("muteOn")}</button>
   <div class="setup-card inst-note"><b>${t("voiceFixTitle")}</b>
     <p class="inst-p">🍎 ${t("voiceFixIOS")}</p>
