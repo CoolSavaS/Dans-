@@ -1087,8 +1087,30 @@ function boot() {
   if (!isUnlocked()) { setView(lockView); return; }
   setView(getProfiles().length ? home : profileSetup);
 }
+
+/* ---- Ekranı açık tut: çalışırken telefon kilitlenmesin (Wake Lock) ---- */
+let _wakeLock = null;
+async function keepAwake() {
+  try {
+    if ("wakeLock" in navigator && document.visibilityState === "visible") {
+      if (_wakeLock) return;
+      _wakeLock = await navigator.wakeLock.request("screen");
+      _wakeLock.addEventListener("release", () => { _wakeLock = null; });
+    }
+  } catch (e) { _wakeLock = null; }
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") keepAwake();
+  else _wakeLock = null;
+});
+// İlk dokunuşta (tarayıcı jest ister) ve sonra kalıcı olarak devrede tut
+["pointerdown", "click", "keydown"].forEach((ev) =>
+  window.addEventListener(ev, keepAwake, { passive: true })
+);
+setInterval(keepAwake, 20000); // sekme/uygulama öne gelince yeniden al
+
 if (document.readyState === "loading") {
-  window.addEventListener("DOMContentLoaded", boot);
+  window.addEventListener("DOMContentLoaded", () => { boot(); keepAwake(); });
 } else {
-  boot();
+  boot(); keepAwake();
 }

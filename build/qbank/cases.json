@@ -1,0 +1,352 @@
+[
+ {
+  "scenario": "You have a two-hour drive to make on a motorway You have a cold and your nose is slightly blocked You take an off-the-shelf cold remedy to help reduce the symptoms",
+  "qas": [
+   [
+    "What information should you check on the medication ?",
+    "Information about the medicine causing drowsiness"
+   ],
+   [
+    "Why would you be using lights in daylight?",
+    "To maximise your visibility to others"
+   ],
+   [
+    "How does your journey affect you?",
+    "You become drowsy"
+   ],
+   [
+    "What should you do about your condition ?",
+    "Stop in a service area, drink a caffeinated drink and then rest"
+   ],
+   [
+    "How could you help yourself stay alert in the short term?",
+    "Open the window"
+   ]
+  ]
+ },
+ {
+  "scenario": "You’re driving in heavy traffic It has rained, but now bright sun is causing glare on the wet road A car overtakes, then pulls back sharply into the traffic just in front of you",
+  "qas": [
+   [
+    "If affected by the road conditions, how should you react?",
+    "Slow down and, if necessary, stop"
+   ],
+   [
+    "What should you do about the overtaking vehicle?",
+    "Remain calm, slow down and increase the gap"
+   ],
+   [
+    "How should you be positioned as you approach the roundabout?",
+    "In the left-hand lane while signalling left"
+   ],
+   [
+    "Why is the large vehicle taking this position?",
+    "The vecihle needs more room to turn"
+   ],
+   [
+    "What should you do at the zebra crossing?",
+    "Stop and wait for the pedestirans to cross"
+   ]
+  ]
+ },
+ {
+  "scenario": "You drive through the city centre, choosing to travel outside the rush hour In the city, there are double red lines along the roadside Later, You reach a major junction. The traffic lights aren’t working but there are very few vehicles on the road",
+  "qas": [
+   [
+    "What effect could your choice of travel time have on your journey?",
+    "Reduced travel time"
+   ],
+   [
+    "What do the red lines mean?",
+    "No stopping at any time"
+   ],
+   [
+    "What should you do at the traffic lights?",
+    "Proceed with care , as with an unmarked junction"
+   ],
+   [
+    "What could be affecting your steering?",
+    "Tyres that are under-inflated"
+   ],
+   [
+    "What should you do with your camera?",
+    "Lock it away securely out of sight"
+   ]
+  ]
+ },
+ {
+  "scenario": "You have a short but essential journey to make It’s early morning and the roads are icy in places. It’s very cold and snow is falling Your tyres are making almost no sound. On turning left, the back of your vehicle slides a little to the right",
+  "qas": [
+   [
+    "What should you do in such weather conditions?",
+    "Allow more time"
+   ],
+   [
+    "How should you brake under the conditions described?",
+    "Gently and slowly"
+   ],
+   [
+    "What does the lack of tyre noise indicate ?",
+    "The road could be icy"
+   ],
+   [
+    "What should you do in the skid described?",
+    "Steer gently to the right"
+   ],
+   [
+    "What colour beacon would this slow-moving vehicle have?",
+    "Amber"
+   ]
+  ]
+ },
+ {
+  "scenario": "You’re waiting to turn right in the town centre. Cars are parked along the roadside, obstructing your view There are many shop windows. The area is busy with traffic and pedestrians Further on , a vehicle is unloading on the left and there are several oncoming cars",
+  "qas": [
+   [
+    "How could the shop windows help your here?",
+    "By showing reflections of any unseen vehicles approaching"
+   ],
+   [
+    "What hazard do the parked cars create?",
+    "Pedestrians or cyclists could be hidden from view"
+   ],
+   [
+    "What should you do about the delivery vehicle?",
+    "Stop and wait until the way is clear ahead"
+   ],
+   [
+    "What must you do in response to the officer’s signal?",
+    "Stop and wait patiently until signalled to go on"
+   ],
+   [
+    "When can you use the bus lane?",
+    "Not at any time"
+   ]
+  ]
+ },
+ {
+  "scenario": "You’re driving behind a cyclist. The road has potholes and cracks Further ahead, there’s a roundabout. A horse rider is approaching it in the left-hand lane In a built-up area with street lights,you see a school sign with a flashing amber signal.There are no speed-limit signs",
+  "qas": [
+   [
+    "What might the cyclist need to do on this road surface?",
+    "Swerve"
+   ],
+   [
+    "What should you expect the horse rider to do next?",
+    "Go in any direction"
+   ],
+   [
+    "What does this flashing amber signal mean?",
+    "Children may be crossing the road"
+   ],
+   [
+    "What would the speed limit be in the built-up area?",
+    "30 mph"
+   ],
+   [
+    "What can you tell about the person at the pedestrian crossing?",
+    "They’re deaf and blind"
+   ]
+  ]
+ },
+ {
+  "scenario": "It’s dry but very windy. On the motorway, you see a car towing a large caravan in the middle lane You then move onto a long, open stretch of single carriageway, where you pass a motorcyclist Later, you’re travelling behind a long vehicle and want to overtake",
+  "qas": [
+   [
+    "What’s the national motorway speed limit for the vehicle and caravan?",
+    "60 mph"
+   ],
+   [
+    "What could happen to the motorcyclist in these weather conditions?",
+    "They could be blown off course"
+   ],
+   [
+    "What should you do when following the long vehicle?",
+    "Drop back so you can see more of the road ahead"
+   ],
+   [
+    "Why is it important not to obstruct these tracks?",
+    "Trams are unable to steer round obsturctions"
+   ],
+   [
+    "What should you do about the bus?",
+    "Give way as long as it’s safe to do so"
+   ]
+  ]
+ },
+ {
+  "scenario": "You’re driving in very thick fog and the road surface is also rather damp You’re using fog lights as well as headlights You leave a larger gap than normal between your vehicle and the one in front",
+  "qas": [
+   [
+    "How might the road condition affect your stopping distance?",
+    "It could be doubled"
+   ],
+   [
+    "Why would you be using your fog lights?",
+    "Visibility is below 100 metres"
+   ],
+   [
+    "Why would you leave a larger gap between your vehicle and the one in front?",
+    "The vehicle ahead may stop suddenly"
+   ],
+   [
+    "What should you do before overtaking the pumping vehicle?",
+    "Wait until the road ahead is clear"
+   ],
+   [
+    "What information would the rumble devices provide to help you?",
+    "A reminder to make you aware of your speed"
+   ]
+  ]
+ },
+ {
+  "scenario": "You’re towing a small trailer behind your car and joining the motorway from a slip road. The motorway is busy with morning traffic Further along the motorway, the central resevation is coned off for repair. Lanes have been narrowed for some distance, using cones and temporary reflective studs Once past the roadworks, traffic speeds up and the left-hand lane becomes clear",
+  "qas": [
+   [
+    "Who has priority at the motorway",
+    "Vehicles already travelling in the left-hand lane"
+   ],
+   [
+    "What colours would these studs be?",
+    "Green"
+   ],
+   [
+    "Which lane should you use after the roadworks?",
+    "The left-hand lane"
+   ],
+   [
+    "What’s the national motorway speed limit for your vehicle and trailer?",
+    "60 mph"
+   ],
+   [
+    "What should you do about leaving the motorway?",
+    "Continue on until you reach the next exit"
+   ]
+  ]
+ },
+ {
+  "scenario": "It’s early evening and the street lamps are lit You’re driving home at 30 mph, although there are no speed-limit signs. The road is a single carriageway and you’re alone in your vehicle Sleet is falling steadily and it’s cold. Ahead, a vechile is spreading salt on the road",
+  "qas": [
+   [
+    "How have you identified a 30 mph speed limit?",
+    "There are regularly spaced street lights in the area"
+   ],
+   [
+    "What would the normal centre white-line markings be on this road?",
+    "Short dashes with long spaces"
+   ],
+   [
+    "What colour flashing beacon would the salting vehicle have?",
+    "Amber"
+   ],
+   [
+    "Why would you not use the high-occupancy lane on your journey?",
+    "It’s for vehicles that have two or more occupants"
+   ],
+   [
+    "Why don’t you park level with your home?",
+    "Because you mustn’t park there"
+   ]
+  ]
+ },
+ {
+  "scenario": "You’re driving through an area where there are many pedestrians There’s turning ahead with a red-bordered round sign, showing a car with a motorcycle above it Outside town, the single carriageway road has double unbroken white centre lines",
+  "qas": [
+   [
+    "What’s meant by the round sign described above?",
+    "No motor vehicles"
+   ],
+   [
+    "What do the lines along the centre of the road tell you?",
+    "No parking"
+   ],
+   [
+    "What’s the national speed limit on the road outside of town?",
+    "60 mph"
+   ],
+   [
+    "What details would you find on the brown signs?",
+    "Tourist information"
+   ],
+   [
+    "As the traffic lights change, what colour signal would you see next?",
+    "An amber light on its own"
+   ]
+  ]
+ },
+ {
+  "scenario": "You’ve just bought your first car, a good second-hand vehicle. It has passed its MOT but the vehicle tax needs to be paid You arrange and pay for the highest level of insurance cover available. You recieve a cover note from your insurance company",
+  "qas": [
+   [
+    "What’s meant when a vehicle passes its MOT?",
+    "The vehicle meets the minimum legal safety standarts"
+   ],
+   [
+    "When you need to contact DVLA?",
+    "If you change your name or address"
+   ],
+   [
+    "What’s highest level of insurance cover available?",
+    "Comprehensive"
+   ],
+   [
+    "What does the cover note give you?",
+    "Temporary cover"
+   ],
+   [
+    "Which document must you show at the post office to tax your car?",
+    "New keeper supplement"
+   ]
+  ]
+ },
+ {
+  "scenario": "You witness a road traffic incident involving three vehicles. You stop your vehicle and quickly place a warning triangle on the road. Then you telephone the emergency services You check on the people involved. Two people are slightly injured and another is in shock. You stay with them until the emergency services arrive While paramedics check the three casualties, you explain the situation to the police and offer your own contact",
+  "qas": [
+   [
+    "How else could you have used your own vehicle to warn other traffic?",
+    "By switching on hazard warning lights"
+   ],
+   [
+    "Apart from casualty information, what details would you need to give to the emergency services?",
+    "Location of the incidents"
+   ],
+   [
+    "How should you deal with the person suffering from shock?",
+    "Stay with them and reassure them confidently"
+   ],
+   [
+    "Why would you provide your own details?",
+    "You might be required to supply a witness statement"
+   ],
+   [
+    "Which documents would police officers normally ask to see from the people involved in the incident?",
+    "Driving licence and insurance certificate"
+   ]
+  ]
+ },
+ {
+  "scenario": "You and your family are going on holiday. You’ll be driving You’re loading a newly purchased roof rack on your estate car Your partner is helping two young children with their seat belts in the rear seats",
+  "qas": [
+   [
+    "How could the full roof rack affect the vehicle’s handling?",
+    "Reduce the stability"
+   ],
+   [
+    "How should Shadow be secured for safety? (dog name)",
+    "In an special harness"
+   ],
+   [
+    "Who’s responsible for making sure that the children wear the appropriate seat belt or child restraint?",
+    "The driver"
+   ],
+   [
+    "Which one of these actions could help reduce the estate car’s fuel consumption?",
+    "Removing the roof rack when it isn’t being used"
+   ],
+   [
+    "What should you check at the filling station ?",
+    "That there’s appropriate pressure in all four tyres plus the spare"
+   ]
+  ]
+ }
+]
